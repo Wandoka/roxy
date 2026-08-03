@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(roxy LANGUAGES C)
-
-# Find ncurses
-find_package(Curses REQUIRED)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # для того чтобы LSP работал
+find_library(NCURSESW_LIB ncursesw REQUIRED)
 
 # Collect all source and header files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -20,8 +19,8 @@ target_include_directories(roxy PRIVATE
     ${CURSES_INCLUDE_DIRS}
 )
 
-target_link_libraries(roxy PRIVATE ${CURSES_LIBRARIES})
+target_link_libraries(roxy PRIVATE ncursesw) # ncursesW W чтобы работали wide characters
 
 target_compile_options(roxy PRIVATE -Wall -Wextra)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)# для того чтобы LSP работал
+target_compile_definitions(roxy PRIVATE _XOPEN_SOURCE_EXTENDED=1) # Wide char для ncurses
