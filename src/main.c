@@ -13,7 +13,7 @@ wchar_t hiragana[] = {
 };
 
 wchar_t get_user_input_wchar() {
-  move(0,0); // чтобы символы, которые появлялись при написании появлялись в отдельной первой строке
+  move(LINES-1,COLS-1);
   wint_t ch;
   get_wch(&ch);
   return (wchar_t) ch;
@@ -30,8 +30,8 @@ void print_random_string() {
     }
   }
   wstr[5] = 0;
-  mvaddwstr(1, 0, wstr);
-  move(0,0);
+  mvaddwstr(1, 1, wstr);
+  move(LINES-1,COLS-1);
   refresh();
   
   //обновляю данные для текущей строки
@@ -40,14 +40,14 @@ void print_random_string() {
 
 void color_current_symbol(int color_pair_id) {
   attron(COLOR_PAIR(color_pair_id));
-  mvaddnwstr(1, current_string_position*size_modifier, wstr+current_string_position, 1); 
-  move(0,0);
+  mvaddnwstr(1, 1+current_string_position*size_modifier, wstr+current_string_position, 1); 
+  move(LINES-1,COLS-1);
   attroff(COLOR_PAIR(color_pair_id));
   refresh(); 
 }
 void check_and_update(wchar_t c) { 
-  mvaddnwstr(2, 2, &c, 1);
-  move(0,0);
+  mvaddnwstr(5, 1, &c, 1);
+  move(LINES-1,COLS-1);
   if (c == wstr[current_string_position]) {
     color_current_symbol(ROXY_GREEN_COLOR_PAIR);
     ++current_string_position;
@@ -70,8 +70,8 @@ int main(void) {
   start_color();              // позволяет работать с цветами
   init_pair(1, COLOR_GREEN, COLOR_BLACK);
   init_pair(2, COLOR_RED, COLOR_BLACK);
-  //curs_set(0);                // 0 — скрыть курсор
-  move(0,0);
+  curs_set(1);                
+  move(LINES-1,COLS-1);
   refresh(); 
  
   print_random_string();
