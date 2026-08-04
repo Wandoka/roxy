@@ -1,3 +1,4 @@
 cmake -B build -S . &&
 cmake --build build &&
-build/roxy
+cp build/roxy test_roxy/roxy
+test_roxy/roxy

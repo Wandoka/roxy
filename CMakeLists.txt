@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(roxy LANGUAGES C)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # для того чтобы LSP работал
+
 find_library(NCURSESW_LIB ncursesw REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 # Collect all source and header files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -19,7 +22,10 @@ target_include_directories(roxy PRIVATE
     ${CURSES_INCLUDE_DIRS}
 )
 
-target_link_libraries(roxy PRIVATE ncursesw) # ncursesW W чтобы работали wide characters
+target_link_libraries(roxy PRIVATE 
+  ncursesw      # ncursesW W чтобы работали wide characters
+  SQLite3::SQLite3
+) 
 
 target_compile_options(roxy PRIVATE -Wall -Wextra)
 
