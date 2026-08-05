@@ -1,10 +1,20 @@
-#include "hiragana_trainer.h"
 #include "args_handling.h"
-#include <stdio.h>
+#include "data_base_initialization.h"
+#include"data_base_interface.h"
 
 void train(int argc, char *argv[]) {
   (void) argc; (void) argv;
-  run_trainer();
+  initialize_database();
+  
+  Hiragana listOfHiragana[100];
+  int am = 0;
+  select_hiragana_rows(listOfHiragana, &am, 100, 0, 0);
+  for(int i = 0; i < am; ++i) {
+    wprintf(L"found romaji %l\n", listOfHiragana[i].romaji);
+    wprintf(L"found symbol %ls %d\n", listOfHiragana[i].symbol, listOfHiragana[i].symbol);
+  }
+
+  //run_trainer();
 }
 
 struct Argument listOfArguments[] = {

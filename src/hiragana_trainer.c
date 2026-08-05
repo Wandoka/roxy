@@ -8,7 +8,7 @@
 #define ROXY_GREEN_COLOR_PAIR   1
 #define ROXY_RED_COLOR_PAIR     2
 
-wchar_t hiragana[] = {
+wchar_t hiragana_short[] = {
   L'あ', L'い', L'う', L'え', L'お',
   L'か', L'き', L'く', L'け', L'こ'
 };
@@ -27,7 +27,7 @@ wchar_t wstr[6];
 void print_random_string() {
   for(int i = 0; i < 5; ++i) {
     while(1) {
-      wstr[i] = hiragana[rand()%10];
+      wstr[i] = hiragana_short[rand()%10];
       if(i == 0 || wstr[i-1] != wstr[i]) break;
     }
   }

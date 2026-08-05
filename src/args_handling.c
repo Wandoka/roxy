@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <string.h>
 
-int exectute_action_in_Argument_array(struct Argument listOfArguments[], char* name, int argc, char *argv[]) {
+int exectute_action_in_Argument_array(Argument listOfArguments[], char* name, int argc, char *argv[]) {
   //listOfArguments should gurantee that it ends with {0, 0, 0}
   int i = 0;
   while(listOfArguments[i].name != 0) {
