@@ -2,15 +2,12 @@
 #include <assert.h>
 #include <string.h>
 
-int exectute_action_in_Argument_array(Argument listOfArguments[], char* name, int argc, char *argv[]) {
-  //listOfArguments should gurantee that it ends with {0, 0, 0}
-  int i = 0;
-  while(listOfArguments[i].name != 0) {
+int exectute_action_in_Argument_array(int n, Argument listOfArguments[n], char* name, int argc, char *argv[argc]) {
+  for(int i = 0; i < n; ++i) {
     if(strcmp(listOfArguments[i].name, name)==0) {
       listOfArguments[i].action(argc, argv); 
       return 0;
     }
-    ++i;
   }
   return -1;
 }

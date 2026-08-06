@@ -1,7 +1,6 @@
 #include "data_base_initialization.h"
-#include "data_base_query_templates.h"
 #include "full_hiragana_table.h"
-
+#include "data_base_query_templates.h"
 sqlite3 *db;
 
 void initialize_database() {

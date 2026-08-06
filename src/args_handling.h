@@ -7,5 +7,5 @@ typedef struct Argument {
   Handler action;
 } Argument;
 
-int exectute_action_in_Argument_array(Argument listOfArguments[], char* name, int argc, char *argv[]);  //listOfArguments should gurantee that it ends with {0, 0, 0}
+int exectute_action_in_Argument_array(int n, Argument listOfArguments[n], char* name, int argc, char *argv[argc]);
 

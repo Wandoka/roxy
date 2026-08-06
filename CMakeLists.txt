@@ -29,4 +29,15 @@ target_link_libraries(roxy PRIVATE
 
 target_compile_options(roxy PRIVATE -Wall -Wextra)
 
+#--------
+#санитайзеры для дебага
+target_compile_options(roxy PRIVATE
+    -g -O0
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(roxy PRIVATE
+    -fsanitize=address,undefined
+)
+#--------
 target_compile_definitions(roxy PRIVATE _XOPEN_SOURCE_EXTENDED=1) # Wide char для ncurses

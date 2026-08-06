@@ -1,5 +1,6 @@
 #include "data_base_query_templates.h"
 #include <ncurses.h>
+#include <string.h>
 #include <wchar.h>
 
 // ============================================================
@@ -145,7 +146,8 @@ const char *hiragana_handakuten_romaji[11][8] = {
 };
 
 
-void add_hiragana_symbol(const wchar_t *symbol, const char *romaji, int row, int column, const char *type, int can_sokuon) {
+void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m], int row, int column, int k, char type[k], int can_sokuon) {
+
   const char *sql =
     "INSERT INTO hiragana "
     "(symbol, romaji, row, column, type, can_sokuon) "
@@ -153,12 +155,12 @@ void add_hiragana_symbol(const wchar_t *symbol, const char *romaji, int row, int
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
-  sql_bind_wtext(stmt, 1, symbol);
-  sql_bind_text(stmt, 2, romaji);
-  sql_bind_int (stmt, 3, row);
-  sql_bind_int (stmt, 4, column);
-  sql_bind_text(stmt, 5, type);
-  sql_bind_int (stmt, 6, can_sokuon);
+  sql_bind_wtext(stmt, 1, n, symbol);
+  sql_bind_text(stmt,  2, m, romaji);
+  sql_bind_int (stmt,  3, row);
+  sql_bind_int (stmt,  4, column);
+  sql_bind_text(stmt,  5, k, type);
+  sql_bind_int (stmt,  6, can_sokuon);
 
   stmt_run_and_finish(stmt);
 }
@@ -167,22 +169,52 @@ void fill_full_hiragana_table() {
   //hiragana normal
   for(int i = 0; i < 11; ++i) {
     for(int j = 0; j < 8; ++j) {
-      if(hiragana[i][j][0] == '\0') continue;
-      add_hiragana_symbol(hiragana[i][j], hiragana_romaji[i][j], i, j, "normal", hiragana_sokuon[i][j]);  
+      if(hiragana[i][j][0] == L'\0') continue;
+      int n = wcslen(hiragana[i][j]);
+      int m = strlen(hiragana_romaji[i][j]);
+      int k = strlen("normal");
+
+      add_hiragana_symbol(
+          n, (wchar_t *)hiragana[i][j],
+          m, (char *)hiragana_romaji[i][j],
+          i, j,
+          k, (char *)"normal",
+          hiragana_sokuon[i][j]
+      );
     }
   }
   //hiragana_dakuten
   for(int i = 0; i < 11; ++i) {
     for(int j = 0; j < 8; ++j) {
-      if(hiragana_dakuten[i][j][0] == '\0') continue;
-      add_hiragana_symbol(hiragana_dakuten[i][j], hiragana_dakuten_romaji[i][j], i, j, "dakuten", hiragana_dakuten_sokuon[i][j]);  
+      if (hiragana_dakuten[i][j][0] == L'\0') continue;
+      int n = wcslen(hiragana_dakuten[i][j]);
+      int m = strlen(hiragana_dakuten_romaji[i][j]);
+      int k = strlen("dakuten");
+
+      add_hiragana_symbol(
+          n, (wchar_t *)hiragana_dakuten[i][j],
+          m, (char *)hiragana_dakuten_romaji[i][j],
+          i, j,
+          k, (char *)"dakuten",
+          hiragana_dakuten_sokuon[i][j]
+      );    
     }
   }
   //hiragana_handakuten
   for(int i = 0; i < 11; ++i) {
     for(int j = 0; j < 8; ++j) {
-      if(hiragana_handakuten[i][j][0] == '\0') continue;
-      add_hiragana_symbol(hiragana_handakuten[i][j], hiragana_handakuten_romaji[i][j], i, j, "handakuten", hiragana_handakuten_sokuon[i][j]);  
+      if (hiragana_handakuten[i][j][0] == L'\0') continue;
+      int n = wcslen(hiragana_handakuten[i][j]);
+      int m = strlen(hiragana_handakuten_romaji[i][j]);
+      int k = strlen("handakuten");
+
+      add_hiragana_symbol(
+          n, (wchar_t *)hiragana_handakuten[i][j],
+          m, (char *)hiragana_handakuten_romaji[i][j],
+          i, j,
+          k, (char *)"handakuten",
+          hiragana_handakuten_sokuon[i][j]
+      );  
     }
   }
 
