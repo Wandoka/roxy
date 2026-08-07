@@ -1,13 +1,13 @@
+#include "full_hiragana_table.h"
 #include "data_base_query_templates.h"
 #include <ncurses.h>
 #include <string.h>
-#include <wchar.h>
 
 // ============================================================
 // 1. Hiragana (base + yoon)
 // Columns: 0=a 1=i 2=u 3=e 4=o  5=ya 6=yu 7=yo
 // ============================================================
-const wchar_t *hiragana[11][8] = {
+static const wchar_t *hiragana[11][8] = {
     { L"あ", L"い", L"う", L"え", L"お", L"",     L"",     L""     }, // 0  a
     { L"か", L"き", L"く", L"け", L"こ", L"きゃ", L"きゅ", L"きょ" }, // 1  ka
     { L"さ", L"し", L"す", L"せ", L"そ", L"しゃ", L"しゅ", L"しょ" }, // 2  sa
@@ -24,7 +24,7 @@ const wchar_t *hiragana[11][8] = {
 // ============================================================
 // 2. Dakuten (゛) + yoon
 // ============================================================
-const wchar_t *hiragana_dakuten[11][8] = {
+static const wchar_t *hiragana_dakuten[11][8] = {
     { L"",   L"",   L"",   L"",   L"",   L"",     L"",     L""     }, // 0  a
     { L"が", L"ぎ", L"ぐ", L"げ", L"ご", L"ぎゃ", L"ぎゅ", L"ぎょ" }, // 1  ga
     { L"ざ", L"じ", L"ず", L"ぜ", L"ぞ", L"じゃ", L"じゅ", L"じょ" }, // 2  za
@@ -41,7 +41,7 @@ const wchar_t *hiragana_dakuten[11][8] = {
 // ============================================================
 // 3. Handakuten (゜) + yoon  (only ha-row)
 // ============================================================
-const wchar_t *hiragana_handakuten[11][8] = {
+static const wchar_t *hiragana_handakuten[11][8] = {
     { L"",   L"",   L"",   L"",   L"",   L"",     L"",     L""     }, // 0
     { L"",   L"",   L"",   L"",   L"",   L"",     L"",     L""     }, // 1
     { L"",   L"",   L"",   L"",   L"",   L"",     L"",     L""     }, // 2
@@ -58,7 +58,7 @@ const wchar_t *hiragana_handakuten[11][8] = {
 // ============================================================
 // 4. Sokuon possibility matrices (1 = っ may precede this mora)
 // ============================================================
-int hiragana_sokuon[11][8] = {
+static int hiragana_sokuon[11][8] = {
     { 0,0,0,0,0, 0,0,0 }, // a
     { 1,1,1,1,1, 1,1,1 }, // ka / kya…
     { 1,1,1,1,1, 1,1,1 }, // sa / sha…
@@ -72,7 +72,7 @@ int hiragana_sokuon[11][8] = {
     { 0,0,0,0,0, 0,0,0 }  // n
 };
 
-int hiragana_dakuten_sokuon[11][8] = {
+static int hiragana_dakuten_sokuon[11][8] = {
     { 0,0,0,0,0, 0,0,0 }, // a
     { 1,1,1,1,1, 1,1,1 }, // ga
     { 1,1,1,1,1, 1,1,1 }, // za
@@ -86,7 +86,7 @@ int hiragana_dakuten_sokuon[11][8] = {
     { 0,0,0,0,0, 0,0,0 }
 };
 
-int hiragana_handakuten_sokuon[11][8] = {
+static int hiragana_handakuten_sokuon[11][8] = {
     { 0,0,0,0,0, 0,0,0 },
     { 0,0,0,0,0, 0,0,0 },
     { 0,0,0,0,0, 0,0,0 },
@@ -103,7 +103,7 @@ int hiragana_handakuten_sokuon[11][8] = {
 // ============================================================
 // 5. English / Hepburn romanization tables
 // ============================================================
-const char *hiragana_romaji[11][8] = {
+static const char *hiragana_romaji[11][8] = {
     { "a",  "i",  "u",  "e",  "o",  "",    "",    ""    }, // a
     { "ka", "ki", "ku", "ke", "ko", "kya", "kyu", "kyo" }, // ka
     { "sa", "shi","su", "se", "so", "sha", "shu", "sho" }, // sa
@@ -117,7 +117,7 @@ const char *hiragana_romaji[11][8] = {
     { "n",  "",   "",   "",   "",   "",    "",    ""    }  // n
 };
 
-const char *hiragana_dakuten_romaji[11][8] = {
+static const char *hiragana_dakuten_romaji[11][8] = {
     { "",   "",   "",   "",   "",   "",    "",    ""    },
     { "ga", "gi", "gu", "ge", "go", "gya", "gyu", "gyo" },
     { "za", "ji", "zu", "ze", "zo", "ja",  "ju",  "jo"  },
@@ -131,7 +131,7 @@ const char *hiragana_dakuten_romaji[11][8] = {
     { "",   "",   "",   "",   "",   "",    "",    ""    }
 };
 
-const char *hiragana_handakuten_romaji[11][8] = {
+static const char *hiragana_handakuten_romaji[11][8] = {
     { "",   "",   "",   "",   "",   "",    "",    ""    },
     { "",   "",   "",   "",   "",   "",    "",    ""    },
     { "",   "",   "",   "",   "",   "",    "",    ""    },
@@ -146,7 +146,7 @@ const char *hiragana_handakuten_romaji[11][8] = {
 };
 
 
-void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m], int row, int column, int k, char type[k], int can_sokuon) {
+static void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m], int row, int column, int k, char type[k], int can_sokuon) {
 
   const char *sql =
     "INSERT INTO hiragana "

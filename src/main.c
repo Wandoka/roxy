@@ -2,11 +2,12 @@
 #include "data_base_initialization.h"
 #include "common.h"
 #include <locale.h>
+#include "random_generator_interface.h"
 #include "hiragana_trainer.h"
 
 void train(int argc, char *argv[argc]) {
   (void) argc; (void) argv; 
-  run_trainer();
+  run_trainer(0, 3);
 }
 
 struct Argument listOfArguments[] = {
@@ -16,6 +17,7 @@ struct Argument listOfArguments[] = {
 int main(int argc, char *argv[argc]) {
   setlocale(LC_ALL, ""); // UTF-8
   initialize_database();
+  initialize_random_generator();
   if (argc <= 1) {
     train(0, NULL);
     return 0;

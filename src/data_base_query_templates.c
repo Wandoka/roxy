@@ -1,4 +1,5 @@
 //переименовать этот файл
+#include "data_base_query_templates.h"
 #include "data_base_initialization.h"
 #include <assert.h>
 #include <stdio.h>

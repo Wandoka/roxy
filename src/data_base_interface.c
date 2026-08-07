@@ -1,4 +1,4 @@
-#include "full_hiragana_table.h"
+#include "data_base_interface.h"
 #include "data_base_query_templates.h"
 #include "common.h"
 
