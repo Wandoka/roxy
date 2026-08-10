@@ -8,7 +8,7 @@
 
 void hiragana_train(int argc, char *argv[argc]) {
   (void) argc; (void) argv; 
-  run_hiragana_trainer(0, 0);
+  run_hiragana_trainer(1, 1);
 }
 
 struct Argument listOfArguments[] = {

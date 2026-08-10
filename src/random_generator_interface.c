@@ -1,4 +1,5 @@
 #include "random_generator_interface.h"
+#include "logger.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -15,8 +16,10 @@ void initialize_random_generator() {
 
 void random_japan_string(int n, JapanChar all_symbols[n], int m, JapanChar random_string[m], int am) {
   for(int i = 0; i < am; ++i) {
-    int j = random_int(0, n);
+    int j = random_int(0, n-1);
     random_string[i] = all_symbols[j];
+    LOG_W(all_symbols[i].hiragana.symbol);
+    LOG_W(random_string[i].hiragana.symbol);
     if(random_int(1, 100) <= 5) { //5% chance of adding a sokuon
       if(can_have_sokuon_before(&random_string[i])) {
         random_string[i].sokuon_before=1;     

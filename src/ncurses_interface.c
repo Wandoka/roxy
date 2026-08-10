@@ -49,6 +49,7 @@ void ncurses_finish_session() {
 
 void ncurses_output_wstring(int n, wchar_t wstring[n]) {
   mvaddwstr(config.output_text_start_L, config.output_text_start_C, wstring);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
   set_cursor_to_default_position();
   refresh();
 }
@@ -62,8 +63,8 @@ wchar_t ncurses_get_user_input_wchar() {
 
 void color_jchar_in_position(int position, wchar_t c, int color_pair_id) {
   attron(COLOR_PAIR(color_pair_id));
-  mvaddnwstr(1, 1+position*JAPANEESE_SIZE, &c, 1); 
-  move(LINES-1,COLS-1);
+  mvaddnwstr(config.output_text_start_L, config.output_text_start_C+position*JAPANEESE_SIZE, &c, 1); 
+  set_cursor_to_default_position();
   attroff(COLOR_PAIR(color_pair_id));
   refresh(); 
 }

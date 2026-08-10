@@ -23,12 +23,12 @@ void set_new_string_to_progress(int n, JapanChar jstring[n]) {
 
 void progress_string_by_char(wchar_t c, int *good, int *finished) {
   if (c == wString[progress]) {
-    color_jchar_in_position(progress, c, NCURSES_GREEN_COLOR_PAIR);
+    color_jchar_in_position(progress, wString[progress], NCURSES_GREEN_COLOR_PAIR);
     ++progress;
     *good = 1;
   }
   else {
-    color_jchar_in_position(progress, c, NCURSES_RED_COLOR_PAIR);
+    color_jchar_in_position(progress, wString[progress], NCURSES_RED_COLOR_PAIR);
     *good = 0;
   } 
   if (progress == wString_length) {
