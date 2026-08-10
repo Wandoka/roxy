@@ -5,15 +5,18 @@ typedef enum {
     HIRAGANA = 0,
     KATAGANA  = 1,
     KANJI  = 2,
+    SOKUON = 3,
+    YOON = 4,
 } Type;
 
 typedef struct Hiragana {
   wchar_t symbol[4];
-  char romaji[6];
+  char romaji[10];
   int row;
   int column;
   char type[10];
   int can_sokuon;
+  int can_yoon;
 } Hiragana;
 
 typedef struct Katagana {

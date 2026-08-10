@@ -14,7 +14,8 @@ void initialize_database() {
     "row INTEGER,"
     "column INTEGER,"
     "type TEXT DEFAULT 'normal' CHECK(type IN ('normal','dakuten','handakuten','yoon','sokuon')),"
-    "can_sokuon INTEGER);"
+    "can_sokuon INTEGER,"
+    "can_yoon INTEGER);"
   ;
   sql_run(sql_create_hiragana_table);
   fill_full_hiragana_table();

@@ -10,6 +10,8 @@ typedef struct NCursesConfig{
   int output_text_start_C;
   int cursor_position_L;
   int cursor_position_C;
+  int input_echo_start_L;
+  int input_echo_start_C;
 } NCursesConfig;
 
 void get_default_ncurses_config(NCursesConfig *p);

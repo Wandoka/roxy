@@ -4,7 +4,7 @@
 
 void select_hiragana_rows(int n, Hiragana listOfHiragana[n], int *found_rows, int up_row, int down_row) {
   const char *sql =
-    "SELECT symbol, romaji, row, column, type, can_sokuon "
+    "SELECT symbol, romaji, row, column, type, can_sokuon, can_yoon "
     "FROM hiragana WHERE (row >= ? AND row <= ?);"
   ;
 
@@ -21,6 +21,7 @@ void select_hiragana_rows(int n, Hiragana listOfHiragana[n], int *found_rows, in
     stmt_column_int(stmt,   3, &h->column);
     stmt_column_text(stmt,  4, ARRAY_SIZE(h->type), h->type);
     stmt_column_int(stmt,   5, &h->can_sokuon);
+    stmt_column_int(stmt,   6, &h->can_yoon);
     ++*found_rows;
   }
 }

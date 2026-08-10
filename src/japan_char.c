@@ -1,7 +1,6 @@
 #include "japan_char.h"
 #include <assert.h>
 #include <stdlib.h>
-#include "full_hiragana_table.h"
 
 void unite_hiragana_kanji_katagana(int n, Hiragana hiragana[n], int m, Katagana katagana[m], int k, Kanji kanji[k], int q, JapanChar japan_string[q], int *am) {
   *am = 0;
@@ -32,13 +31,6 @@ void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t w
     JapanChar *jchar = &japan_string[i];
     wchar_t *symbol;
     int length;
-    if(jchar->sokuon_before) {
-      length = wcslen(sokuon_symbol);
-      assert(*wlen + length < m);
-      wcscpy(&wstring[*wlen], sokuon_symbol);
-      *wlen += length-1; //#чтобы в след раз писал в место, где стоит сейчас "\0" 
-
-    }
     switch(jchar->type) {
       case HIRAGANA:
         symbol = japan_string[i].hiragana.symbol;

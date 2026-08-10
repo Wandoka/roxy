@@ -14,8 +14,8 @@ static JapanChar randomJString[6];
 
 
 static void new_random_jstring() {
-  int japan_chars_am = random_int(4, 6);
-  random_japan_string(pack_size, trainingPack, ARRAY_SIZE(randomJString), randomJString, japan_chars_am);  
+  int japan_chars_am = random_int(5, 5);
+  pseudorandom_japan_string(pack_size, trainingPack, ARRAY_SIZE(randomJString), randomJString, japan_chars_am);  
   for(int i = 0; i < japan_chars_am; ++i) {
     LOG("+++++++++++++++");
     LOG_W(randomJString[i].hiragana.symbol);
@@ -25,7 +25,9 @@ static void new_random_jstring() {
     LOG("+++++++++++++++");
 
   }
+  LOG("WANDOKA1");
   set_new_string_to_progress(japan_chars_am, randomJString);
+  LOG("WANDOKA2");
 }
 
 int run_hiragana_trainer(int up_row, int down_row) {
@@ -48,7 +50,6 @@ int run_hiragana_trainer(int up_row, int down_row) {
   unite_hiragana_kanji_katagana(found_rows, listOfHiragana, 0, NULL, 0, NULL, ARRAY_SIZE(trainingPack), trainingPack, &pack_size);
  
   new_random_jstring();
-
 
   while(1) {
     wchar_t c = ncurses_get_user_input_wchar();

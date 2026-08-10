@@ -13,6 +13,10 @@ void get_default_ncurses_config(NCursesConfig *p) {
 
   p->cursor_position_L = LINES-1;
   p->cursor_position_C = COLS-1;
+
+  p->input_echo_start_L = 5;
+  p->input_echo_start_C = 1;
+
   return;
 }
 
@@ -58,6 +62,8 @@ wchar_t ncurses_get_user_input_wchar() {
   set_cursor_to_default_position();
   wint_t ch;
   get_wch(&ch);
+  mvaddnwstr(config.input_echo_start_L, config.input_echo_start_C, &ch, 1);
+  set_cursor_to_default_position();
   return (wchar_t) ch;
 }
 
