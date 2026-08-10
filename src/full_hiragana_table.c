@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include <string.h>
 
+const wchar_t* sokuon_symbol = L"っ";
 // ============================================================
 // 1. Hiragana (base + yoon)
 // Columns: 0=a 1=i 2=u 3=e 4=o  5=ya 6=yu 7=yo

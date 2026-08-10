@@ -4,22 +4,24 @@
 #include <locale.h>
 #include "random_generator_interface.h"
 #include "hiragana_trainer.h"
+#include "logger.h"
 
-void train(int argc, char *argv[argc]) {
+void hiragana_train(int argc, char *argv[argc]) {
   (void) argc; (void) argv; 
-  run_trainer(0, 3);
+  run_hiragana_trainer(0, 0);
 }
 
 struct Argument listOfArguments[] = {
-  { "train", "start hiragana training", train }, 
+  { "hiragana", "start hiragana training", hiragana_train }, 
 };
 
 int main(int argc, char *argv[argc]) {
   setlocale(LC_ALL, ""); // UTF-8
   initialize_database();
   initialize_random_generator();
+  initialize_logger(); 
   if (argc <= 1) {
-    train(0, NULL);
+    hiragana_train(0, NULL);
     return 0;
   }
   //first parameter - type of action. Remaning - arguments to that action

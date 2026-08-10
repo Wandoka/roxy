@@ -55,7 +55,7 @@ void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t w
     length = wcslen(symbol);
     assert(*wlen + length < m);
     wcscpy(&wstring[*wlen], symbol);
-    *wlen += length-1; //#чтобы в след раз писал в место, где стоит сейчас "\0" 
+    *wlen += length; //#чтобы в след раз писал в место, где стоит сейчас "\0" 
   }
   assert(*wlen < m);
   wstring[*wlen] = '\0';

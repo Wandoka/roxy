@@ -1,3 +1,3 @@
 #pragma once
 
-int run_trainer(int up_row, int down_row);
+int run_hiragana_trainer(int up_row, int down_row);

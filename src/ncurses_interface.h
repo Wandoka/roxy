@@ -1,6 +1,5 @@
 #pragma once
 #include <ncurses.h>
-#include "japan_char.h"
 
 #define NCURSES_GREEN_COLOR_PAIR   1
 #define NCURSES_RED_COLOR_PAIR     2
@@ -13,8 +12,10 @@ typedef struct NCursesConfig{
   int cursor_position_C;
 } NCursesConfig;
 
-void set_default_ncurses_config(NCursesConfig *p);
-void ncurses_initialize_session(NCursesConfig *new_config);
+void get_default_ncurses_config(NCursesConfig *p);
+void ncurses_initialize_session();
+void ncurses_set_config(NCursesConfig *new_config);
 void ncurses_finish_session();
-void ncurses_output_jstring(int n, JapanChar jstring[n]);
+void ncurses_output_wstring(int n, wchar_t wstring[n]);
 wchar_t ncurses_get_user_input_wchar();
+void color_jchar_in_position(int position, wchar_t c, int color_pair_id);
