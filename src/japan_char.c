@@ -1,4 +1,5 @@
 #include "japan_char.h"
+#include "src/logger.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -33,6 +34,8 @@ void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t w
     int length;
     switch(jchar->type) {
       case HIRAGANA:
+      case SOKUON:
+      case YOON:
         symbol = japan_string[i].hiragana.symbol;
         break;
       case KATAGANA:
@@ -42,6 +45,7 @@ void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t w
         exit(1);
         break;
       default:
+        LOG("WANDOKA_3");
         exit(1);
     }
     length = wcslen(symbol);
@@ -56,6 +60,8 @@ void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t w
 int can_have_sokuon_before(JapanChar *c) {
   switch(c->type) {
     case HIRAGANA:
+    case SOKUON:
+    case YOON:
       return c->hiragana.can_sokuon; 
       break;
     case KATAGANA:
@@ -64,6 +70,7 @@ int can_have_sokuon_before(JapanChar *c) {
     case KANJI:
       return 0;
     default:
+      LOG("WANDOKA_4");
       exit(1);
   }
 }

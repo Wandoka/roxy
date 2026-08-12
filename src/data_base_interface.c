@@ -25,3 +25,21 @@ void select_hiragana_rows(int n, Hiragana listOfHiragana[n], int *found_rows, in
     ++*found_rows;
   }
 }
+
+void select_card_rows(int n, Card listOfCards[n], int *found_rows) {
+  const char *sql =
+    "SELECT japanese, meaning, addition_date "
+    "FROM cards;"
+  ;
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  *found_rows = 0;
+  for(int i = 0; i < n; ++i) {
+    if(sqlite3_step(stmt) != SQLITE_ROW) break;
+    Card *c = &listOfCards[i];
+    stmt_column_wtext(stmt,  0, ARRAY_SIZE(c->japanese), c->japanese);
+    stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->meaning), c->meaning);
+    stmt_column_text(stmt,   2, ARRAY_SIZE(c->addition_date), c->addition_date);
+    ++*found_rows;
+  }
+}

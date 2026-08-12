@@ -31,14 +31,14 @@ sqlite3_stmt* sql_prepare(const char *sql) {
   return stmt;
 }
 
-void sql_bind_text(sqlite3_stmt *stmt, int id, int n, char column_data[n]) {
+void sql_bind_text(sqlite3_stmt *stmt, int id, int n, const char column_data[n]) {
   int result = sqlite3_bind_text(stmt, id, column_data, -1, SQLITE_TRANSIENT);
   if (result != SQLITE_OK) {
       exit(1);
   }
 }
 
-void sql_bind_wtext(sqlite3_stmt *stmt, int id, int n, wchar_t column_data[n]) {
+void sql_bind_wtext(sqlite3_stmt *stmt, int id, int n, wchar_t const column_data[n]) {
   assert(n <= 1024);
   char utf8_column_data[1024];
   wchar_to_utf8(n, column_data, ARRAY_SIZE(utf8_column_data), utf8_column_data);

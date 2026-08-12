@@ -1,9 +1,10 @@
 #include <assert.h>
 #include <ncurses.h>
+#include <wchar.h>
 #include "ncurses_interface.h"
 #include "common.h"
 
-static const int JAPANEESE_SIZE = 2; //в японском символы в 2 раза шире чем в английском или русском
+static const int JAPANESE_SIZE = 2; //в японском символы в 2 раза шире чем в английском или русском
 static int ncurses_initialized = 0;
 
 void get_default_ncurses_config(NCursesConfig *p) {
@@ -17,6 +18,8 @@ void get_default_ncurses_config(NCursesConfig *p) {
   p->input_echo_start_L = 5;
   p->input_echo_start_C = 1;
 
+  p->output_text_info_pannel_start_L = 3;
+  p->output_text_info_pannel_start_C = 1;
   return;
 }
 
@@ -58,10 +61,25 @@ void ncurses_output_wstring(int n, wchar_t wstring[n]) {
   refresh();
 }
 
+void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]) {
+  mvaddwstr(config.output_text_info_pannel_start_L, config.output_text_info_pannel_start_C, wstring);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
+void ncurses_clear_output_line() {
+  move(config.output_text_start_L, config.output_text_start_C);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
+
 wchar_t ncurses_get_user_input_wchar() {
   set_cursor_to_default_position();
-  wint_t ch;
-  get_wch(&ch);
+  wchar_t ch;
+  get_wch((wint_t*)&ch);
   mvaddnwstr(config.input_echo_start_L, config.input_echo_start_C, &ch, 1);
   set_cursor_to_default_position();
   return (wchar_t) ch;
@@ -69,7 +87,7 @@ wchar_t ncurses_get_user_input_wchar() {
 
 void color_jchar_in_position(int position, wchar_t c, int color_pair_id) {
   attron(COLOR_PAIR(color_pair_id));
-  mvaddnwstr(config.output_text_start_L, config.output_text_start_C+position*JAPANEESE_SIZE, &c, 1); 
+  mvaddnwstr(config.output_text_start_L, config.output_text_start_C+position*JAPANESE_SIZE, &c, 1); 
   set_cursor_to_default_position();
   attroff(COLOR_PAIR(color_pair_id));
   refresh(); 

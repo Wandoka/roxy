@@ -184,7 +184,7 @@ void fill_full_hiragana_table() {
       int n = wcslen(hiragana[i][j]);
       int m = strlen(hiragana_romaji[i][j]);
       int k = strlen("normal");
-      int can_yoon = (i >= 1 && j == 2); //все ряды кроме гласных, столбец с гласной i
+      int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
                                          
       add_hiragana_symbol(
           n, (wchar_t *)hiragana[i][j],
@@ -203,7 +203,7 @@ void fill_full_hiragana_table() {
       int n = wcslen(hiragana_dakuten[i][j]);
       int m = strlen(hiragana_dakuten_romaji[i][j]);
       int k = strlen("dakuten");
-      int can_yoon = (i >= 1 && j == 2); //все ряды кроме гласных, столбец с гласной i
+      int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
 
       add_hiragana_symbol(
           n, (wchar_t *)hiragana_dakuten[i][j],
@@ -222,7 +222,7 @@ void fill_full_hiragana_table() {
       int n = wcslen(hiragana_handakuten[i][j]);
       int m = strlen(hiragana_handakuten_romaji[i][j]);
       int k = strlen("handakuten");
-      int can_yoon = (i >= 1 && j == 2); //все ряды кроме гласных, столбец с гласной i
+      int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
 
       add_hiragana_symbol(
           n, (wchar_t *)hiragana_handakuten[i][j],

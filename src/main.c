@@ -5,14 +5,21 @@
 #include "random_generator_interface.h"
 #include "hiragana_trainer.h"
 #include "logger.h"
+#include "cards_trainer.h"
 
 void hiragana_train(int argc, char *argv[argc]) {
   (void) argc; (void) argv; 
-  run_hiragana_trainer(1, 1);
+  run_hiragana_trainer(2, 3);
+}
+
+void cards_train(int argc, char *argv[argc]) {
+  (void) argc; (void) argv; 
+  run_card_trainer();
 }
 
 struct Argument listOfArguments[] = {
   { "hiragana", "start hiragana training", hiragana_train }, 
+  { "cards",    "start cards training"   , cards_train }, 
 };
 
 int main(int argc, char *argv[argc]) {
@@ -20,8 +27,9 @@ int main(int argc, char *argv[argc]) {
   initialize_database();
   initialize_random_generator();
   initialize_logger(); 
+
   if (argc <= 1) {
-    hiragana_train(0, NULL);
+    cards_train(0, NULL);
     return 0;
   }
   //first parameter - type of action. Remaning - arguments to that action
