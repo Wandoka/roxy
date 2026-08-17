@@ -35,5 +35,17 @@ void initialize_database() {
   sql_run(sql_create_cards_table);
   add_all_cards();
 
+  const char *sql_create_symbol_training_statistics =
+    "CREATE TABLE IF NOT EXISTS symbol_training_statistics ("
+    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    "success INTEGER NOT NULL CHECK(success IN (0, 1)),"
+    "spent_time INT ,"
+    "type TEXT CHECK(type IN ('hiragana','katagana','kanji')),"
+    ""
+    ");"
+  ;
+  sql_run(sql_create_symbol_training_statistics);
+  add_all_cards();
+
 }
 
