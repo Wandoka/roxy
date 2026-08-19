@@ -3,16 +3,16 @@
 #include <ncurses.h>
 #include <string.h>
 
-static const wchar_t* sokuon_symbol = L"っ";
-static const wchar_t* yoon_symbols[3] = {
+static const wchar_t* hiragana_sokuon_symbol = L"っ";
+static const wchar_t* hiragana_yoon_symbols[3] = {
     L"ゃ",   // ya
     L"ゅ",   // yu
     L"ょ"    // yo
 };
 
 
-JapanChar sokuon_jchar = {0};
-JapanChar yoon_jchars[3] = {0};
+JapanChar hiragana_sokuon_jchar = {0};
+JapanChar hiragana_yoon_jchars[3] = {0};
 
 // ============================================================
 // 1. Hiragana (base + yoon)
@@ -242,19 +242,19 @@ void fill_full_hiragana_table() {
   }
   {
     //sokuon
-    wcscpy(sokuon_jchar.symbol, sokuon_symbol);
-    strcpy(sokuon_jchar.romaji, "");
-    strcpy(sokuon_jchar.type, "hiragana");
-    strcpy(sokuon_jchar.subtype, "small");
+    wcscpy(hiragana_sokuon_jchar.symbol, hiragana_sokuon_symbol);
+    strcpy(hiragana_sokuon_jchar.romaji, "");
+    strcpy(hiragana_sokuon_jchar.type, "hiragana");
+    strcpy(hiragana_sokuon_jchar.subtype, "small");
 
-    int n = wcslen(sokuon_jchar.symbol);
-    int m = strlen(sokuon_jchar.romaji);
-    int k = strlen(sokuon_jchar.subtype);
+    int n = wcslen(hiragana_sokuon_jchar.symbol);
+    int m = strlen(hiragana_sokuon_jchar.romaji);
+    int k = strlen(hiragana_sokuon_jchar.subtype);
     add_hiragana_symbol(
-        n, (wchar_t *)sokuon_jchar.symbol,
-        m, (char *)sokuon_jchar.romaji,
+        n, (wchar_t *)hiragana_sokuon_jchar.symbol,
+        m, (char *)hiragana_sokuon_jchar.romaji,
         -1, -1,
-        k, sokuon_jchar.subtype,
+        k, hiragana_sokuon_jchar.subtype,
         0,
         0
     );  
@@ -262,18 +262,18 @@ void fill_full_hiragana_table() {
   
   for(int i = 0; i < 3; ++i) {
     //yoon
-    wcscpy(yoon_jchars[i].symbol, yoon_symbols[i]);
-    strcpy(yoon_jchars[i].romaji, "");
-    strcpy(yoon_jchars[i].type, "hiragana");
-    strcpy(yoon_jchars[i].subtype, "small");
-    int n = wcslen(yoon_jchars[i].symbol);
-    int m = strlen(yoon_jchars[i].romaji);
-    int k = strlen(yoon_jchars[i].subtype);
+    wcscpy(hiragana_yoon_jchars[i].symbol, hiragana_yoon_symbols[i]);
+    strcpy(hiragana_yoon_jchars[i].romaji, "");
+    strcpy(hiragana_yoon_jchars[i].type, "hiragana");
+    strcpy(hiragana_yoon_jchars[i].subtype, "small");
+    int n = wcslen(hiragana_yoon_jchars[i].symbol);
+    int m = strlen(hiragana_yoon_jchars[i].romaji);
+    int k = strlen(hiragana_yoon_jchars[i].subtype);
     add_hiragana_symbol(
-        n, (wchar_t *)yoon_jchars[i].symbol,
-        m, (char *)yoon_jchars[i].romaji,
+        n, (wchar_t *)hiragana_yoon_jchars[i].symbol,
+        m, (char *)hiragana_yoon_jchars[i].romaji,
         -1, -1,
-        k, yoon_jchars[i].subtype,
+        k, hiragana_yoon_jchars[i].subtype,
         0,
         0
     );

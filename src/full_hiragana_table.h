@@ -2,8 +2,8 @@
 #include "src/japan_char.h"
 void fill_full_hiragana_table();
 
-extern JapanChar sokuon_jchar;
-extern JapanChar yoon_jchars[];
+extern JapanChar hiragana_sokuon_jchar;
+extern JapanChar hiragana_yoon_jchars[];
 
 
 
