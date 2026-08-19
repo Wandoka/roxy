@@ -10,6 +10,7 @@ static const wchar_t* yoon_symbols[3] = {
     L"ょ"    // yo
 };
 
+
 JapanChar sokuon_jchar = {0};
 JapanChar yoon_jchars[3] = {0};
 
@@ -156,12 +157,12 @@ static const char *hiragana_handakuten_romaji[11][5] = {
 };
 
 
-static void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m], int row, int column, int k, char type[k], int can_sokuon, int can_yoon) {
+static void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m], int row, int column, int k, char subtype[k], int can_sokuon, int can_yoon) {
 
   const char *sql =
-    "INSERT INTO hiragana "
-    "(symbol, romaji, row, column, type, can_sokuon, can_yoon) "
-    "VALUES (?, ?, ?, ?, ?, ?, ?);"
+    "INSERT INTO JapanChars "
+    "(symbol, romaji, row, column, subtype, can_sokuon, can_yoon, type) "
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
@@ -169,9 +170,11 @@ static void add_hiragana_symbol(int n, wchar_t symbol[n], int m, char romaji[m],
   sql_bind_text(stmt,  2, m, romaji);
   sql_bind_int (stmt,  3, row);
   sql_bind_int (stmt,  4, column);
-  sql_bind_text(stmt,  5, k, type);
+  sql_bind_text(stmt,  5, k, subtype);
   sql_bind_int (stmt,  6, can_sokuon);
   sql_bind_int (stmt,  7, can_yoon);
+  char* hiragana = "hiragana";
+  sql_bind_text(stmt,  8, strlen(hiragana), hiragana);
 
   stmt_run_and_finish(stmt);
 }
@@ -183,14 +186,15 @@ void fill_full_hiragana_table() {
       if(hiragana[i][j][0] == L'\0') continue;
       int n = wcslen(hiragana[i][j]);
       int m = strlen(hiragana_romaji[i][j]);
-      int k = strlen("normal");
+      char* normal = "normal";
+      int k = strlen(normal);
       int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
                                          
       add_hiragana_symbol(
           n, (wchar_t *)hiragana[i][j],
           m, (char *)hiragana_romaji[i][j],
           i, j,
-          k, (char *)"normal",
+          k, normal,
           hiragana_sokuon[i][j],
           can_yoon
       );
@@ -202,14 +206,15 @@ void fill_full_hiragana_table() {
       if (hiragana_dakuten[i][j][0] == L'\0') continue;
       int n = wcslen(hiragana_dakuten[i][j]);
       int m = strlen(hiragana_dakuten_romaji[i][j]);
-      int k = strlen("dakuten");
+      char* dakuten = "dakuten";
+      int k = strlen(dakuten);
       int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
 
       add_hiragana_symbol(
           n, (wchar_t *)hiragana_dakuten[i][j],
           m, (char *)hiragana_dakuten_romaji[i][j],
           i, j,
-          k, (char *)"dakuten",
+          k, dakuten,
           hiragana_dakuten_sokuon[i][j],
           can_yoon
       );    
@@ -221,14 +226,15 @@ void fill_full_hiragana_table() {
       if (hiragana_handakuten[i][j][0] == L'\0') continue;
       int n = wcslen(hiragana_handakuten[i][j]);
       int m = strlen(hiragana_handakuten_romaji[i][j]);
-      int k = strlen("handakuten");
+      char* handakuten = "handakuten";
+      int k = strlen(handakuten);
       int can_yoon = (i >= 1 && j == 1); //все ряды кроме гласных, столбец с гласной i
 
       add_hiragana_symbol(
           n, (wchar_t *)hiragana_handakuten[i][j],
           m, (char *)hiragana_handakuten_romaji[i][j],
           i, j,
-          k, (char *)"handakuten",
+          k, (char *)handakuten,
           hiragana_handakuten_sokuon[i][j],
           can_yoon
       );  
@@ -236,18 +242,19 @@ void fill_full_hiragana_table() {
   }
   {
     //sokuon
-    wcscpy(sokuon_jchar.hiragana.symbol, sokuon_symbol);
-    strcpy(sokuon_jchar.hiragana.romaji, "sokuon");
-    sokuon_jchar.type = SOKUON;
+    wcscpy(sokuon_jchar.symbol, sokuon_symbol);
+    strcpy(sokuon_jchar.romaji, "");
+    strcpy(sokuon_jchar.type, "hiragana");
+    strcpy(sokuon_jchar.subtype, "small");
 
-    int n = wcslen(sokuon_jchar.hiragana.symbol);
-    int m = strlen(sokuon_jchar.hiragana.romaji);
-    int k = strlen("sokuon");
+    int n = wcslen(sokuon_jchar.symbol);
+    int m = strlen(sokuon_jchar.romaji);
+    int k = strlen(sokuon_jchar.subtype);
     add_hiragana_symbol(
-        n, (wchar_t *)sokuon_jchar.hiragana.symbol,
-        m, (char *)sokuon_jchar.hiragana.romaji,
+        n, (wchar_t *)sokuon_jchar.symbol,
+        m, (char *)sokuon_jchar.romaji,
         -1, -1,
-        k, (char *)"sokuon",
+        k, sokuon_jchar.subtype,
         0,
         0
     );  
@@ -255,18 +262,18 @@ void fill_full_hiragana_table() {
   
   for(int i = 0; i < 3; ++i) {
     //yoon
-    wcscpy(yoon_jchars[i].hiragana.symbol, yoon_symbols[i]);
-    strcpy(yoon_jchars[i].hiragana.romaji, "yoon");
-    yoon_jchars[i].type = YOON;
-
-    int n = wcslen(yoon_jchars[i].hiragana.symbol);
-    int m = strlen(yoon_jchars[i].hiragana.romaji);
-    int k = strlen("yoon");
+    wcscpy(yoon_jchars[i].symbol, yoon_symbols[i]);
+    strcpy(yoon_jchars[i].romaji, "");
+    strcpy(yoon_jchars[i].type, "hiragana");
+    strcpy(yoon_jchars[i].subtype, "small");
+    int n = wcslen(yoon_jchars[i].symbol);
+    int m = strlen(yoon_jchars[i].romaji);
+    int k = strlen(yoon_jchars[i].subtype);
     add_hiragana_symbol(
-        n, (wchar_t *)yoon_jchars[i].hiragana.symbol,
-        m, (char *)yoon_jchars[i].hiragana.romaji,
+        n, (wchar_t *)yoon_jchars[i].symbol,
+        m, (char *)yoon_jchars[i].romaji,
         -1, -1,
-        k, (char *)"yoon",
+        k, yoon_jchars[i].subtype,
         0,
         0
     );

@@ -7,44 +7,46 @@ sqlite3 *db;
 
 void initialize_database() {
   sqlite3_open("roxy.db", &db);
-  const char *sql_create_hiragana_table =
-    "CREATE TABLE IF NOT EXISTS hiragana ("
-    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "symbol TEXT UNIQUE,"
-    "romaji TEXT,"
-    "row INTEGER,"
-    "column INTEGER,"
-    "type TEXT DEFAULT 'normal' CHECK(type IN ('normal','dakuten','handakuten','yoon','sokuon')),"
-    "can_sokuon INTEGER,"
-    "can_yoon INTEGER);"
+  const char *sql_create_JapanChars_table =
+    " CREATE TABLE IF NOT EXISTS JapanChars ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " symbol TEXT UNIQUE,"
+    " romaji TEXT,"
+    " row INTEGER,"
+    " column INTEGER,"
+    " type TEXT CHECK(type IN ('hiragana','katakana','kanji')),"
+    " subtype TEXT DEFAULT 'normal' CHECK(subtype IN ('normal','dakuten','handakuten','small')),"
+    " can_sokuon INTEGER,"
+    " can_yoon INTEGER);"
   ;
-  sql_run(sql_create_hiragana_table);
+  sql_run(sql_create_JapanChars_table);
   fill_full_hiragana_table();
 
-  const char *sql_create_cards_table =
-    "CREATE TABLE IF NOT EXISTS cards ("
-    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "japanese TEXT UNIQUE,"
-    "meaning TEXT,"
-    "english TEXT,"
-    "russian TEXT,"
-    "addition_date TEXT,"
-    "type TEXT DEFAULT 'phrase' CHECK(type IN ('grammar', 'word', 'phrase'))"
-    ");"
+  const char *sql_create_Cards_table =
+    " CREATE TABLE IF NOT EXISTS Cards ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " japanese TEXT UNIQUE,"
+    " meaning TEXT,"
+    " english TEXT,"
+    " russian TEXT,"
+    " addition_date TEXT,"
+    " type TEXT DEFAULT 'phrase' CHECK(type IN ('grammar', 'word', 'phrase'))"
+    " );"
   ;
-  sql_run(sql_create_cards_table);
+  sql_run(sql_create_Cards_table);
   add_all_cards();
 
-  const char *sql_create_symbol_training_statistics =
-    "CREATE TABLE IF NOT EXISTS symbol_training_statistics ("
-    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "success INTEGER NOT NULL CHECK(success IN (0, 1)),"
-    "spent_time INT ,"
-    "type TEXT CHECK(type IN ('hiragana','katagana','kanji')),"
-    ""
-    ");"
+  const char *sql_create_SymbolTrainingStatistics =
+    " CREATE TABLE IF NOT EXISTS SymbolTrainingStatistics ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " symbol_id INTEGER NOT NULL,"
+    " success INTEGER NOT NULL CHECK(success IN (0, 1)),"
+    " spent_time_ms INTEGER NOT NULL,"
+    " attempt_date TEXT DEFAULT (datetime('now', 'localtime')),"
+    " FOREIGN KEY (symbol_id) REFERENCES JapanChars(id) ON DELETE CASCADE"
+    " );"
   ;
-  sql_run(sql_create_symbol_training_statistics);
+  sql_run(sql_create_SymbolTrainingStatistics);
   add_all_cards();
 
 }

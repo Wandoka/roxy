@@ -12,6 +12,7 @@ static char *error_message = 0;
 void sql_run(const char *sql) {
   int result = sqlite3_exec(db, sql, 0, 0, &error_message);
   if (result != SQLITE_OK) {
+    printf("SQL error: %s\nSQL: %s\n", error_message ? error_message : sqlite3_errmsg(db), sql);
     exit(1);
   }
 }
@@ -34,6 +35,7 @@ sqlite3_stmt* sql_prepare(const char *sql) {
 void sql_bind_text(sqlite3_stmt *stmt, int id, int n, const char column_data[n]) {
   int result = sqlite3_bind_text(stmt, id, column_data, -1, SQLITE_TRANSIENT);
   if (result != SQLITE_OK) {
+      printf("SQL bind_text error: %s\n", sqlite3_errmsg(db));
       exit(1);
   }
 }
@@ -44,6 +46,7 @@ void sql_bind_wtext(sqlite3_stmt *stmt, int id, int n, wchar_t const column_data
   wchar_to_utf8(n, column_data, ARRAY_SIZE(utf8_column_data), utf8_column_data);
   int result = sqlite3_bind_text(stmt, id, utf8_column_data, -1, SQLITE_TRANSIENT);
   if (result != SQLITE_OK) {
+      printf("SQL bind_wtext error: %s\n", sqlite3_errmsg(db));
       exit(1);
   }
 }
@@ -51,6 +54,7 @@ void sql_bind_wtext(sqlite3_stmt *stmt, int id, int n, wchar_t const column_data
 void sql_bind_int(sqlite3_stmt *stmt, int id, int column) {
   int result = sqlite3_bind_int(stmt, id, column);
   if (result != SQLITE_OK) {
+      printf("SQL bind_int error: %s\n", sqlite3_errmsg(db));
       exit(1);
   }
 }

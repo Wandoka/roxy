@@ -32,22 +32,19 @@ void pseudorandom_japan_string(int n, JapanChar all_symbols[n], int m, JapanChar
   for(int i = 0; i < am; ++i) {
     int j = random_int(0, n-1);
     random_jstring[i] = all_symbols[j];
-    if(i != 0 && wcscmp(random_jstring[i].hiragana.symbol, random_jstring[i-1].hiragana.symbol) == 0) {
+    if(i != 0 && wcscmp(random_jstring[i].symbol, random_jstring[i-1].symbol) == 0) {
       //skipping elements that are repeating the previous one
       --i;
       continue;
     }
-    LOG_W(all_symbols[j].hiragana.symbol);
-    LOG_W(random_jstring[i].hiragana.symbol);
-    LOG_INT(am);
 
     //тут идёт проверка на добавление сокуона и йууна
-    if(i+1 < am && random_jstring[i].hiragana.can_sokuon && random_int(1, 100) <= 5) { //5% chance of adding a sokuon
+    if(i+1 < am && random_jstring[i].can_sokuon && random_int(1, 100) <= 3) { //3% chance of adding a sokuon
       random_jstring[i+1] = random_jstring[i];
       random_jstring[i] = sokuon_jchar;
       ++i;
     }
-    if(i+1 < am && random_jstring[i].hiragana.can_yoon && random_int(1, 100) <= 50) { //50% chance of adding a yoon
+    if(i+1 < am && random_jstring[i].can_yoon && random_int(1, 100) <= 20) { //20% chance of adding a yoon
       random_jstring[i+1] = yoon_jchars[random_int(0, 2)];
       ++i;
     }

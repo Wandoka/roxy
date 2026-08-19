@@ -1,39 +1,18 @@
 #pragma once
 #include <wchar.h>
 
-typedef enum {
-    HIRAGANA = 0,
-    KATAGANA  = 1,
-    KANJI  = 2,
-    SOKUON = 3,
-    YOON = 4,
-} Type;
-
-typedef struct Hiragana {
+typedef struct JapanChar {
+  int id;
   wchar_t symbol[4];
   char romaji[10];
   int row;
   int column;
   char type[10];
+  char subtype[10];
   int can_sokuon;
   int can_yoon;
-} Hiragana;
-
-typedef struct Katagana {
-} Katagana;
-typedef struct Kanji {
-} Kanji;
-
-
-typedef struct JapanChar {
-  Type type;
-  Hiragana hiragana;
-  Katagana katagana;
-  Kanji kanji;
-  int sokuon_before;
 } JapanChar;
 
 
-void wstring_from_japan_chars(int n, JapanChar japan_string[n], int m, wchar_t wstring[m], int *wlen);
-void unite_hiragana_kanji_katagana(int n, Hiragana hiragana[n], int m, Katagana katagana[m], int k, Kanji kanji[k], int q, JapanChar japan_string[q], int *am);
+void wstring_from_japan_chars(int n, JapanChar japanString[n], int m, wchar_t wstring[m], int *wlen);
 int can_have_sokuon_before(JapanChar *c);
