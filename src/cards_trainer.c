@@ -12,7 +12,7 @@ static int total_cards = 0;
 
 void set_random_card() {
   Card *card = &listOfCards[random_int(0, total_cards-1)];
-  set_new_hidden_string_to_progress(ARRAY_SIZE(card->japanese), card->japanese, ARRAY_SIZE(card->meaning), card->meaning);
+  set_new_hidden_string_to_Word_Progress(ARRAY_SIZE(card->japanese), card->japanese, ARRAY_SIZE(card->meaning), card->meaning);
 }
 void run_card_trainer() {
   ncurses_initialize_session();  
@@ -25,7 +25,7 @@ void run_card_trainer() {
   while(1) {
     wchar_t c = ncurses_get_user_input_wchar();
     int good, finished;
-    progress_string_by_char(c, &good, &finished);
+    Word_Progress_string_by_char(c, &good, &finished);
     if(finished) {
       set_random_card();
     }

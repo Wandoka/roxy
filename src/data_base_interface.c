@@ -5,7 +5,7 @@
 void select_hiragana_rows(int n, JapanChar japanString[n], int *found_rows, int up_row, int down_row) {
   const char *sql =
     " SELECT id, symbol, romaji, row, column, type, subtype, can_sokuon, can_yoon"
-    " FROM JapanChars WHERE type == \"hiragana\" and (row >= ? AND row <= ?);"
+    " FROM JapanChars WHERE type == 'hiragana' and (row >= ? AND row <= ?);"
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
@@ -44,4 +44,16 @@ void select_card_rows(int n, Card listOfCards[n], int *found_rows) {
     stmt_column_text(stmt,   2, ARRAY_SIZE(c->addition_date), c->addition_date);
     ++*found_rows;
   }
+}
+
+void insert_symbol_training_statistic(int JapanChar_id, int failed_attempts, int spent_time_ms) {
+  const char *sql =
+    " INSERT INTO SymbolTrainingStatistics (JapanChar_id, failed_attempts, spent_time_ms)"
+    " VALUES (?, ?, ?);"
+  ;
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_int(stmt, 1, JapanChar_id);
+  sql_bind_int(stmt, 2, failed_attempts);
+  sql_bind_int(stmt, 3, spent_time_ms);
+  sqlite3_step(stmt);
 }

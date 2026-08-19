@@ -12,7 +12,7 @@ typedef struct JapanChar {
   int can_sokuon;
   int can_yoon;
 } JapanChar;
+void copy_JapanChar(JapanChar* to, JapanChar* from);
 
 
 void wstring_from_japan_chars(int n, JapanChar japanString[n], int m, wchar_t wstring[m], int *wlen);
-int can_have_sokuon_before(JapanChar *c);

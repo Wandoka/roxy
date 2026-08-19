@@ -39,15 +39,14 @@ void initialize_database() {
   const char *sql_create_SymbolTrainingStatistics =
     " CREATE TABLE IF NOT EXISTS SymbolTrainingStatistics ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    " symbol_id INTEGER NOT NULL,"
-    " success INTEGER NOT NULL CHECK(success IN (0, 1)),"
+    " JapanChar_id INTEGER NOT NULL,"
+    " failed_attempts INTEGER,"
     " spent_time_ms INTEGER NOT NULL,"
     " attempt_date TEXT DEFAULT (datetime('now', 'localtime')),"
-    " FOREIGN KEY (symbol_id) REFERENCES JapanChars(id) ON DELETE CASCADE"
+    " FOREIGN KEY (JapanChar_id) REFERENCES JapanChars(id) ON DELETE CASCADE"
     " );"
   ;
   sql_run(sql_create_SymbolTrainingStatistics);
-  add_all_cards();
 
 }
 
