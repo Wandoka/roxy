@@ -16,6 +16,9 @@ typedef struct NCursesConfig{
   int output_text_info_pannel_start_C;
   int output_text_info_pannel2_start_L;
   int output_text_info_pannel2_start_C;
+  int output_text_info_pannel3_start_L;
+  int output_text_info_pannel3_start_C;
+
 
 } NCursesConfig;
 
@@ -30,3 +33,6 @@ void color_jchar_in_position(int position, wchar_t c, int color_pair_id);
 void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_clear_pannel2_output_line();
+void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_clear_pannel3_output_line();
+

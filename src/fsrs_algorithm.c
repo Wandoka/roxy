@@ -21,7 +21,8 @@ static const double W[21] = {
   1.4835,  // [11] S scale after Again
   0.0614,  // [12] hard cards drop more after Again
   0.2629,  // [13] how old S carries over after Again
-  1.6483,  // [14] late Again is penalized less 0.6014,  // [15] Hard grows S less than Good
+  1.6483,  // [14] late Again is penalized less 
+  0.6014,  // [15] Hard grows S less than Good
   1.8729,  // [16] Easy grows S more than Good
   0.5425,  // [17] same-day grade strength
   0.0912,  // [18] same-day grade offset

@@ -26,3 +26,9 @@ void _LOG_W(const char *file, int line, const char *name, const wchar_t *str) {
     fprintf(log_file, "[%s:%d] %s = %ls\n", file, line, name, str);
     fflush(log_file);
 }
+
+void _LOG_DOUBLE(const char *file, int line, const char *name, double val) {
+    assert(initialized);
+    fprintf(log_file, "[%s:%d] %s = %.17g\n", file, line, name, val);
+    fflush(log_file);
+}

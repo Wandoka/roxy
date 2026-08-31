@@ -74,6 +74,7 @@ void set_new_hidden_string_to_Word_Progress(int n, wchar_t hidden[n], int m, wch
   ncurses_info_pannel_output_wstring(m, shown);
   ncurses_clear_output_line();
   ncurses_clear_pannel2_output_line();
+  ncurses_clear_pannel3_output_line();
 }
 
 
