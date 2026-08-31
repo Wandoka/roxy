@@ -1,4 +1,4 @@
-#include "hiragana_trainer.h"
+#include "kana_trainer.h"
 #include <wchar.h>
 #include "random_generator_interface.h"
 #include "ncurses_interface.h"
@@ -24,7 +24,7 @@ static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time
     return (end_time->tv_sec-start_time->tv_sec)*1000+(end_time->tv_usec-start_time->tv_usec)/1000;
 }
 
-int run_hiragana_trainer(int up_row, int down_row) {
+int run_kana_trainer(int up_row, int down_row) {
   ncurses_initialize_session();  
   NCursesConfig config;
   get_default_ncurses_config(&config);
