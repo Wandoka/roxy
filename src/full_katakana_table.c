@@ -111,72 +111,26 @@ static int katakana_handakuten_sokuon[11][5] = {
     { 0,0,0,0,0 }
 };
 
-// ============================================================
-// 5. English / Hepburn romanization tables
-// ============================================================
-static const char *katakana_romaji[11][5] = {
-    { "a",  "i",  "u",  "e",  "o"  }, // a
-    { "ka", "ki", "ku", "ke", "ko" }, // ka
-    { "sa", "shi","su", "se", "so" }, // sa
-    { "ta", "chi","tsu","te", "to" }, // ta
-    { "na", "ni", "nu", "ne", "no" }, // na
-    { "ha", "hi", "fu", "he", "ho" }, // ha
-    { "ma", "mi", "mu", "me", "mo" }, // ma
-    { "ya", "",   "yu", "",   "yo" }, // ya
-    { "ra", "ri", "ru", "re", "ro" }, // ra
-    { "wa", "",   "",   "",   "wo" }, // wa
-    { "n",  "",   "",   "",   ""   }  // n
-};
-
-static const char *katakana_dakuten_romaji[11][5] = {
-    { "",   "",   "",   "",   ""   },
-    { "ga", "gi", "gu", "ge", "go" },
-    { "za", "ji", "zu", "ze", "zo" },
-    { "da", "ji", "zu", "de", "do" }, // ヂ/ヅ → ji/zu (Hepburn)
-    { "",   "",   "",   "",   ""   },
-    { "ba", "bi", "bu", "be", "bo" },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   }
-};
-
-static const char *katakana_handakuten_romaji[11][5] = {
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "pa", "pi", "pu", "pe", "po" },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   },
-    { "",   "",   "",   "",   ""   }
-};
-
-static void add_katakana_symbol(int n, wchar_t symbol[n], int m, char romaji[m],
+static void add_katakana_symbol(int n, wchar_t symbol[n],
                                 int row, int column, int k, char subtype[k],
                                 int can_sokuon, int can_yoon)
 {
     const char *sql =
         "INSERT INTO JapanChars "
-        "(symbol, romaji, row, column, subtype, can_sokuon, can_yoon, type) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        "(symbol, row, column, subtype, can_sokuon, can_yoon, type) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt *stmt = sql_prepare(sql);
 
     sql_bind_wtext(stmt, 1, n, symbol);
-    sql_bind_text (stmt, 2, m, romaji);
-    sql_bind_int  (stmt, 3, row);
-    sql_bind_int  (stmt, 4, column);
-    sql_bind_text (stmt, 5, k, subtype);
-    sql_bind_int  (stmt, 6, can_sokuon);
-    sql_bind_int  (stmt, 7, can_yoon);
+    sql_bind_int  (stmt, 2, row);
+    sql_bind_int  (stmt, 3, column);
+    sql_bind_text (stmt, 4, k, subtype);
+    sql_bind_int  (stmt, 5, can_sokuon);
+    sql_bind_int  (stmt, 6, can_yoon);
 
     const char* katakana_type = "katakana";
-    sql_bind_text(stmt, 8, strlen(katakana_type), katakana_type);
+    sql_bind_text(stmt, 7, strlen(katakana_type), katakana_type);
 
     stmt_run_and_finish(stmt);
 }
@@ -189,14 +143,12 @@ void fill_full_katakana_table()
             if (katakana[i][j][0] == L'\0') continue;
 
             int n = wcslen(katakana[i][j]);
-            int m = strlen(katakana_romaji[i][j]);
             char* normal = "normal";
             int k = strlen(normal);
             int can_yoon = (i >= 1 && j == 1); // все ряды кроме гласных, столбец i
 
             add_katakana_symbol(
                 n, (wchar_t *)katakana[i][j],
-                m, (char *)katakana_romaji[i][j],
                 i, j,
                 k, normal,
                 katakana_sokuon[i][j],
@@ -211,14 +163,12 @@ void fill_full_katakana_table()
             if (katakana_dakuten[i][j][0] == L'\0') continue;
 
             int n = wcslen(katakana_dakuten[i][j]);
-            int m = strlen(katakana_dakuten_romaji[i][j]);
             char* dakuten = "dakuten";
             int k = strlen(dakuten);
             int can_yoon = (i >= 1 && j == 1);
 
             add_katakana_symbol(
                 n, (wchar_t *)katakana_dakuten[i][j],
-                m, (char *)katakana_dakuten_romaji[i][j],
                 i, j,
                 k, dakuten,
                 katakana_dakuten_sokuon[i][j],
@@ -233,14 +183,12 @@ void fill_full_katakana_table()
             if (katakana_handakuten[i][j][0] == L'\0') continue;
 
             int n = wcslen(katakana_handakuten[i][j]);
-            int m = strlen(katakana_handakuten_romaji[i][j]);
             char* handakuten = "handakuten";
             int k = strlen(handakuten);
             int can_yoon = (i >= 1 && j == 1);
 
             add_katakana_symbol(
                 n, (wchar_t *)katakana_handakuten[i][j],
-                m, (char *)katakana_handakuten_romaji[i][j],
                 i, j,
                 k, handakuten,
                 katakana_handakuten_sokuon[i][j],
@@ -252,17 +200,14 @@ void fill_full_katakana_table()
     // sokuon
     {
         wcscpy(katakana_sokuon_jchar.symbol, katakana_sokuon_symbol);
-        strcpy(katakana_sokuon_jchar.romaji, "");
         strcpy(katakana_sokuon_jchar.type, "katakana");
         strcpy(katakana_sokuon_jchar.subtype, "small");
 
         int n = wcslen(katakana_sokuon_jchar.symbol);
-        int m = strlen(katakana_sokuon_jchar.romaji);
         int k = strlen(katakana_sokuon_jchar.subtype);
 
         add_katakana_symbol(
             n, (wchar_t *)katakana_sokuon_jchar.symbol,
-            m, (char *)katakana_sokuon_jchar.romaji,
             -1, -1,
             k, katakana_sokuon_jchar.subtype,
             0,
@@ -273,17 +218,14 @@ void fill_full_katakana_table()
     // yoon (small ya/yu/yo)
     for (int i = 0; i < 3; ++i) {
         wcscpy(katakana_yoon_jchars[i].symbol, katakana_yoon_symbols[i]);
-        strcpy(katakana_yoon_jchars[i].romaji, "");
         strcpy(katakana_yoon_jchars[i].type, "katakana");
         strcpy(katakana_yoon_jchars[i].subtype, "small");
 
         int n = wcslen(katakana_yoon_jchars[i].symbol);
-        int m = strlen(katakana_yoon_jchars[i].romaji);
         int k = strlen(katakana_yoon_jchars[i].subtype);
 
         add_katakana_symbol(
             n, (wchar_t *)katakana_yoon_jchars[i].symbol,
-            m, (char *)katakana_yoon_jchars[i].romaji,
             -1, -1,
             k, katakana_yoon_jchars[i].subtype,
             0,

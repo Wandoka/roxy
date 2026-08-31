@@ -20,7 +20,7 @@ static void new_random_jstring() {
   set_new_string_to_Symbol_Progress(japan_chars_am, randomJString);
 }
 
-int calc_interval_ms(struct timeval *start_time, struct timeval *end_time) {
+static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time) {
     return (end_time->tv_sec-start_time->tv_sec)*1000+(end_time->tv_usec-start_time->tv_usec)/1000;
 }
 
@@ -48,7 +48,7 @@ int run_hiragana_trainer(int up_row, int down_row) {
     if(jpos != current_jpos) {
       // If we are here - it means it is time to put logs 
       gettimeofday(&end_time,0);
-      insert_symbol_training_statistic(JapanChar_id, failed_attempts, calc_interval_ms(&start_time, &end_time)); 
+      insert_symbol_training_history(JapanChar_id, failed_attempts, calc_interval_ms(&start_time, &end_time)); 
 
       gettimeofday(&start_time,0);
       current_jpos = jpos;

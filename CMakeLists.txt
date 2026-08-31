@@ -25,6 +25,7 @@ target_include_directories(roxy PRIVATE
 target_link_libraries(roxy PRIVATE 
   ncursesw      # ncursesW W чтобы работали wide characters
   SQLite3::SQLite3
+  m
 ) 
 
 target_compile_options(roxy PRIVATE -Wall -Wextra)

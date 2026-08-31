@@ -29,8 +29,8 @@ int main(int argc, char *argv[argc]) {
   initialize_logger(); 
 
   if (argc <= 1) {
-    hiragana_train(0, NULL);
-    //cards_train(0, NULL);
+    //hiragana_train(0, NULL);
+    cards_train(0, NULL);
     return 0;
   }
   //first parameter - type of action. Remaning - arguments to that action

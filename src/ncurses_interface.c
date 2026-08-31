@@ -20,6 +20,10 @@ void get_default_ncurses_config(NCursesConfig *p) {
 
   p->output_text_info_pannel_start_L = 3;
   p->output_text_info_pannel_start_C = 1;
+
+  p->output_text_info_pannel2_start_L = 4;
+  p->output_text_info_pannel2_start_C = 1;
+
   return;
 }
 
@@ -36,6 +40,7 @@ void ncurses_initialize_session() {
   cbreak();  // disable line buffering
   noecho();  // don't echo typed characters
   start_color(); // позволяет работать с цветами
+  keypad(stdscr, TRUE);
   init_pair(NCURSES_GREEN_COLOR_PAIR, COLOR_GREEN, COLOR_BLACK);
   init_pair(NCURSES_RED_COLOR_PAIR, COLOR_RED, COLOR_BLACK);
   curs_set(1);                
@@ -67,6 +72,13 @@ void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]) {
   set_cursor_to_default_position();
   refresh();
 }
+void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]) {
+  mvaddwstr(config.output_text_info_pannel2_start_L, config.output_text_info_pannel2_start_C, wstring);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
 
 void ncurses_clear_output_line() {
   move(config.output_text_start_L, config.output_text_start_C);
@@ -74,6 +86,14 @@ void ncurses_clear_output_line() {
   set_cursor_to_default_position();
   refresh();
 }
+
+void ncurses_clear_pannel2_output_line() {
+  move(config.output_text_info_pannel2_start_L, config.output_text_info_pannel2_start_C);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
 
 
 wchar_t ncurses_get_user_input_wchar() {

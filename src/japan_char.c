@@ -22,7 +22,6 @@ void wstring_from_japan_chars(int n, JapanChar japanString[n], int m, wchar_t ws
 void copy_JapanChar(JapanChar* to, JapanChar* from) {
   to->id = from->id; 
   wcscpy(to->symbol, from->symbol);
-  strcpy(to->romaji, from->romaji);
   to->row = from->row;
   to->column = from->column;
   strcpy(to->type, from->type);

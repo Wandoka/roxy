@@ -4,7 +4,6 @@
 typedef struct JapanChar {
   int id;
   wchar_t symbol[4];
-  char romaji[10];
   int row;
   int column;
   char type[10];

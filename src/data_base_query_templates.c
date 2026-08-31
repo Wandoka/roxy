@@ -59,6 +59,15 @@ void sql_bind_int(sqlite3_stmt *stmt, int id, int column) {
   }
 }
 
+void sql_bind_double(sqlite3_stmt *stmt, int id, double column) {
+  int result = sqlite3_bind_double(stmt, id, column);
+  if (result != SQLITE_OK) {
+      printf("SQL bind_int error: %s\n", sqlite3_errmsg(db));
+      exit(1);
+  }
+}
+
+
 void stmt_column_text(sqlite3_stmt *stmt, int id, int n, char text[n]) {
   const char *temporary_pointer = (const char*)sqlite3_column_text(stmt, id);
   if (temporary_pointer) {
@@ -78,6 +87,10 @@ void stmt_column_wtext(sqlite3_stmt *stmt, int id, int n, wchar_t text[n]) {
 void stmt_column_int(sqlite3_stmt *stmt, int id, int* v) {
   *v = sqlite3_column_int(stmt, id);
 }
+void stmt_column_double(sqlite3_stmt *stmt, int id, double* v) {
+  *v = sqlite3_column_double(stmt, id);
+}
+
 
 
 

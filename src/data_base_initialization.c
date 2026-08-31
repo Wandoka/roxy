@@ -11,7 +11,6 @@ void initialize_database() {
     " CREATE TABLE IF NOT EXISTS JapanChars ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"
     " symbol TEXT UNIQUE,"
-    " romaji TEXT,"
     " row INTEGER,"
     " column INTEGER,"
     " type TEXT CHECK(type IN ('hiragana','katakana','kanji')),"
@@ -22,22 +21,8 @@ void initialize_database() {
   sql_run(sql_create_JapanChars_table);
   fill_full_hiragana_table();
 
-  const char *sql_create_Cards_table =
-    " CREATE TABLE IF NOT EXISTS Cards ("
-    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    " japanese TEXT UNIQUE,"
-    " meaning TEXT,"
-    " english TEXT,"
-    " russian TEXT,"
-    " addition_date TEXT,"
-    " type TEXT DEFAULT 'phrase' CHECK(type IN ('grammar', 'word', 'phrase'))"
-    " );"
-  ;
-  sql_run(sql_create_Cards_table);
-  add_all_cards();
-
-  const char *sql_create_SymbolTrainingStatistics =
-    " CREATE TABLE IF NOT EXISTS SymbolTrainingStatistics ("
+  const char *sql_create_SymbolTrainingFullHistory_table =
+    " CREATE TABLE IF NOT EXISTS SymbolTrainingFullHistory ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"
     " JapanChar_id INTEGER NOT NULL,"
     " failed_attempts INTEGER,"
@@ -46,7 +31,39 @@ void initialize_database() {
     " FOREIGN KEY (JapanChar_id) REFERENCES JapanChars(id) ON DELETE CASCADE"
     " );"
   ;
-  sql_run(sql_create_SymbolTrainingStatistics);
+  sql_run(sql_create_SymbolTrainingFullHistory_table);
 
+
+  const char *sql_create_Cards_table =
+    " CREATE TABLE IF NOT EXISTS Cards ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " back TEXT UNIQUE,"
+    " front TEXT,"
+    " FSRS_Stability DOUBLE,"
+    " FSRS_Difficulty DOUBLE,"
+    " has_FSRS_data INTEGER,"
+    " last_review_unix_time INTEGER,"
+    " when_added TEXT DEFAULT (datetime('now', 'localtime')),"
+    " type TEXT DEFAULT 'phrase'"
+    " );"
+  ;
+  sql_run(sql_create_Cards_table);
+  add_all_cards();
+
+  const char *sql_create_CardsTrainingFullHistory_table =
+    " CREATE TABLE IF NOT EXISTS CardsTrainingFullHistory ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " Card_id INTEGER NOT NULL,"
+    " FSRS_Stability DOUBLE,"
+    " FSRS_Difficulty DOUBLE,"
+    " FSRS_Grade INTEGER,"
+    " used_hint INTEGER,"
+    " failed_symbols INTEGER,"
+    " spent_time_ms INTEGER NOT NULL,"
+    " when_attempted TEXT DEFAULT (datetime('now', 'localtime')),"
+    " FOREIGN KEY (Card_id) REFERENCES Cards(id) ON DELETE CASCADE"
+    " );"
+  ;
+  sql_run(sql_create_CardsTrainingFullHistory_table);
 }
 

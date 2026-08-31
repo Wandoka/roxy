@@ -2,8 +2,13 @@
 #include <wchar.h>
 
 typedef struct Card {
-  wchar_t japanese[200];
-  wchar_t meaning[200];
-  char addition_date[30];
+  int id;
+  wchar_t back[200];
+  wchar_t front[200];
+  double FSRS_Stability;
+  double FSRS_Difficulty;
+  int has_FSRS_data;
+  char when_added[128];
+  int last_review_unix_time;
 } Card;
 
