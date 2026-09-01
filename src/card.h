@@ -9,6 +9,9 @@ typedef struct Card {
   double FSRS_Difficulty;
   int has_FSRS_data;
   char when_added[128];
-  int last_review_unix_time;
+  int last_FSRS_review_unix_time;
+  char last_seen[128];
+  int times_seen;
+  int steps_until_learned;
 } Card;
 

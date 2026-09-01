@@ -1,0 +1,10 @@
+Priority is always cards with R <= 90%
+
+If there are no priority cards, then I should learn new cards.
+New cards are kinda like this:
+Random order. If I do 2 easy in a row - it means that card is learned.
+
+If there are no new cards, then I look at the difficulty of each card. And judjing by that I show a random card.
+I have probably a perfect combo counter.
+
+

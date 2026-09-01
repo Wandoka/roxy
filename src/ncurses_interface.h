@@ -18,6 +18,11 @@ typedef struct NCursesConfig{
   int output_text_info_pannel2_start_C;
   int output_text_info_pannel3_start_L;
   int output_text_info_pannel3_start_C;
+  int output_text_info_pannel4_start_L;
+  int output_text_info_pannel4_start_C;
+  int output_text_info_pannel5_start_L;
+  int output_text_info_pannel5_start_C;
+
 
 
 } NCursesConfig;
@@ -35,4 +40,8 @@ void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_clear_pannel2_output_line();
 void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_clear_pannel3_output_line();
+void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_clear_pannel4_output_line();
+void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_clear_pannel5_output_line();
 

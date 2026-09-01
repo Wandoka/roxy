@@ -41,17 +41,20 @@ void initialize_database() {
     " front TEXT,"
     " FSRS_Stability DOUBLE,"
     " FSRS_Difficulty DOUBLE,"
-    " has_FSRS_data INTEGER,"
-    " last_review_unix_time INTEGER,"
+    " has_FSRS_data INTEGER DEFAULT 0,"
+    " last_FSRS_review_unix_time INTEGER,"
     " when_added TEXT DEFAULT (datetime('now', 'localtime')),"
-    " type TEXT DEFAULT 'phrase'"
+    " type TEXT DEFAULT 'phrase',"
+    " last_seen TEXT,"
+    " times_seen INTEGER DEFAULT 0,"
+    " steps_until_learned INTEGER DEFAULT 2"
     " );"
   ;
   sql_run(sql_create_Cards_table);
   add_all_cards();
 
-  const char *sql_create_CardsTrainingFullHistory_table =
-    " CREATE TABLE IF NOT EXISTS CardsTrainingFullHistory ("
+  const char *sql_create_CardsTrainingFSRSHistory_table =
+    " CREATE TABLE IF NOT EXISTS CardsTrainingFSRSHistory ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"
     " Card_id INTEGER NOT NULL,"
     " FSRS_Stability DOUBLE,"
@@ -64,6 +67,6 @@ void initialize_database() {
     " FOREIGN KEY (Card_id) REFERENCES Cards(id) ON DELETE CASCADE"
     " );"
   ;
-  sql_run(sql_create_CardsTrainingFullHistory_table);
+  sql_run(sql_create_CardsTrainingFSRSHistory_table);
 }
 

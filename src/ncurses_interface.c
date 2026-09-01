@@ -15,7 +15,7 @@ void get_default_ncurses_config(NCursesConfig *p) {
   p->cursor_position_L = LINES-1;
   p->cursor_position_C = COLS-1;
 
-  p->input_echo_start_L = 6;
+  p->input_echo_start_L = 8;
   p->input_echo_start_C = 1;
 
   p->output_text_info_pannel_start_L = 3;
@@ -26,6 +26,12 @@ void get_default_ncurses_config(NCursesConfig *p) {
 
   p->output_text_info_pannel3_start_L = 5;
   p->output_text_info_pannel3_start_C = 1;
+
+  p->output_text_info_pannel4_start_L = 6;
+  p->output_text_info_pannel4_start_C = 1;
+
+  p->output_text_info_pannel5_start_L = 7;
+  p->output_text_info_pannel5_start_C = 1;
 
   return;
 }
@@ -87,6 +93,20 @@ void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n]) {
   set_cursor_to_default_position();
   refresh();
 }
+void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n]) {
+  mvaddwstr(config.output_text_info_pannel4_start_L, config.output_text_info_pannel4_start_C, wstring);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
+void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n]) {
+  mvaddwstr(config.output_text_info_pannel5_start_L, config.output_text_info_pannel5_start_C, wstring);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
 
 
 
@@ -109,6 +129,20 @@ void ncurses_clear_pannel3_output_line() {
   set_cursor_to_default_position();
   refresh();
 }
+void ncurses_clear_pannel4_output_line() {
+  move(config.output_text_info_pannel4_start_L, config.output_text_info_pannel4_start_C);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+void ncurses_clear_pannel5_output_line() {
+  move(config.output_text_info_pannel5_start_L, config.output_text_info_pannel5_start_C);
+  clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  set_cursor_to_default_position();
+  refresh();
+}
+
+
 
 
 

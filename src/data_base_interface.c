@@ -28,27 +28,96 @@ void select_hiragana_rows(int n, JapanChar japanString[n], int *found_rows, int 
   }
 }
 
-void select_lowest_R_card(Card *c) {
+int select_lowest_R_card(Card *c) {
   const char *sql =
-    " SELECT id, back, front, FSRS_Stability, FSRS_Difficulty, has_FSRS_data, last_review_unix_time,"
-    "         ((? - last_review_unix_time) / ?) / FSRS_Stability as R_approximation_for_sorting"
+    " SELECT id, back, front, FSRS_Stability, FSRS_Difficulty, has_FSRS_data, last_FSRS_review_unix_time, last_seen, steps_until_learned, times_seen,"
+    "         ((? - last_FSRS_review_unix_time) / ?) / FSRS_Stability as R_approximation_for_sorting"
     " FROM Cards"
-    " ORDER BY (R_approximation_for_sorting IS NULL) DESC, R_approximation_for_sorting DESC;"
+    " WHERE has_FSRS_data = 1"
+    " ORDER BY R_approximation_for_sorting ASC"
     " LIMIT 1;"
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
   sql_bind_int(stmt, 1, time(NULL));
   sql_bind_double(stmt, 2, 60.0*60.0*24.0);
-  if(sqlite3_step(stmt) != SQLITE_ROW) return;
+  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
   stmt_column_int  (stmt,  0, &c->id);
   stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->back), c->back);
   stmt_column_wtext(stmt,  2, ARRAY_SIZE(c->front), c->front);
   stmt_column_double(stmt,  3, &c->FSRS_Stability);
   stmt_column_double(stmt,  4, &c->FSRS_Difficulty);
   stmt_column_int(stmt,  5, &c->has_FSRS_data); 
-  stmt_column_int(stmt,  6, &c->last_review_unix_time); 
+  stmt_column_int(stmt,  6, &c->last_FSRS_review_unix_time); 
+  stmt_column_text(stmt,  7, ARRAY_SIZE(c->last_seen), c->last_seen); 
+  stmt_column_int(stmt,  8, &c->steps_until_learned); 
+  stmt_column_int(stmt,  9, &c->times_seen);
+
+  return 0;
 }
+
+int select_random_new_card(Card *c) {
+  const char *sql =
+    " SELECT id, back, front, FSRS_Stability, FSRS_Difficulty, has_FSRS_data, last_FSRS_review_unix_time, last_seen, steps_until_learned, times_seen"
+    " FROM Cards"
+    " WHERE has_FSRS_data == 0"
+    " ORDER BY RANDOM()"
+    " LIMIT 1;"
+  ;
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
+  stmt_column_int  (stmt,  0, &c->id);
+  stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->back), c->back);
+  stmt_column_wtext(stmt,  2, ARRAY_SIZE(c->front), c->front);
+  stmt_column_double(stmt,  3, &c->FSRS_Stability);
+  stmt_column_double(stmt,  4, &c->FSRS_Difficulty);
+  stmt_column_int(stmt,  5, &c->has_FSRS_data); 
+  stmt_column_int(stmt,  6, &c->last_FSRS_review_unix_time); 
+  stmt_column_text(stmt,  7, ARRAY_SIZE(c->last_seen), c->last_seen); 
+  stmt_column_int(stmt,  8, &c->steps_until_learned); 
+  stmt_column_int(stmt,  9, &c->times_seen);
+  return 0;
+}
+
+int count_new_cards() {
+  const char *sql =
+    " SELECT COUNT(*)"
+    " FROM Cards"
+    " WHERE has_FSRS_data == 0;"
+  ;
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
+  int result;
+  stmt_column_int  (stmt,  0, &result);
+  return result;
+}
+
+int select_random_learned_card(Card *c) {
+  const char *sql =
+    " SELECT id, back, front, FSRS_Stability, FSRS_Difficulty, has_FSRS_data, last_FSRS_review_unix_time, last_seen, steps_until_learned, times_seen"
+    " FROM Cards"
+    " WHERE has_FSRS_data != 0"
+    " ORDER BY ABS(RANDOM()) * 1.0 / (FSRS_Difficulty * FSRS_Difficulty)"
+    " LIMIT 1;";
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
+  stmt_column_int  (stmt,  0, &c->id);
+  stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->back), c->back);
+  stmt_column_wtext(stmt,  2, ARRAY_SIZE(c->front), c->front);
+  stmt_column_double(stmt,  3, &c->FSRS_Stability);
+  stmt_column_double(stmt,  4, &c->FSRS_Difficulty);
+  stmt_column_int(stmt,  5, &c->has_FSRS_data); 
+  stmt_column_int(stmt,  6, &c->last_FSRS_review_unix_time); 
+  stmt_column_text(stmt,  7, ARRAY_SIZE(c->last_seen), c->last_seen); 
+  stmt_column_int(stmt,  8, &c->steps_until_learned); 
+  stmt_column_int(stmt,  9, &c->times_seen); 
+
+  return 0;
+}
+
 
 void insert_symbol_training_history(int JapanChar_id, int failed_attempts, int spent_time_ms) {
   const char *sql =
@@ -64,7 +133,7 @@ void insert_symbol_training_history(int JapanChar_id, int failed_attempts, int s
 
 void insert_card_training_history(Card *card, FSRS_GRADE grade, int failed_symbols, int without_hint, int spent_time_ms) {
   const char *sql =
-    " INSERT INTO CardsTrainingFullHistory (Card_id, FSRS_Stability, FSRS_Difficulty, FSRS_Grade, used_hint, failed_symbols, spent_time_ms)"
+    " INSERT INTO CardsTrainingFSRSHistory (Card_id, FSRS_Stability, FSRS_Difficulty, FSRS_Grade, used_hint, failed_symbols, spent_time_ms)"
     " VALUES (?, ?, ?, ?, ?, ?, ?);"
   ;
 
@@ -82,7 +151,7 @@ void insert_card_training_history(Card *card, FSRS_GRADE grade, int failed_symbo
 void update_card_FSRS_data(Card* c) {
   const char *sql =
     " UPDATE Cards"
-    " SET FSRS_Stability = ?, FSRS_Difficulty = ?, has_FSRS_data = 1, last_review_unix_time = ?"
+    " SET FSRS_Stability = ?, FSRS_Difficulty = ?, has_FSRS_data = 1, last_FSRS_review_unix_time = ?"
     " WHERE id = ?;"
   ;
   sqlite3_stmt *stmt = sql_prepare(sql);
@@ -90,5 +159,29 @@ void update_card_FSRS_data(Card* c) {
   sql_bind_double(stmt, 2, c->FSRS_Difficulty);
   sql_bind_double(stmt, 3, time(NULL));
   sql_bind_int(stmt, 4, c->id);
+  sqlite3_step(stmt);
+}
+
+void update_card_stepsUntilLearned_data(Card* c) {
+  const char *sql =
+    " UPDATE Cards"
+    " SET steps_until_learned = ?"
+    " WHERE id = ?;"
+  ;
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_double(stmt, 1, c->steps_until_learned);
+  sql_bind_int(stmt, 2, c->id);
+  sqlite3_step(stmt);
+}
+
+void update_card_extra_data(Card* c) {
+  const char *sql =
+    " UPDATE Cards"
+    " SET times_seen = ?, last_seen = datetime('now', 'localtime')"
+    " WHERE id = ?;"
+  ;
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_double(stmt, 1, c->times_seen+1);
+  sql_bind_int(stmt, 2, c->id);
   sqlite3_step(stmt);
 }

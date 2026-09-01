@@ -72,17 +72,13 @@ static double next_s_short(double s, int g) {
 
 static double days_since_last_review(Card *c) {
   time_t unixtime = time(NULL);
-  double days = (unixtime - c->last_review_unix_time) / (60.0 * 60.0 * 24);
+  double days = (unixtime - c->last_FSRS_review_unix_time) / (60.0 * 60.0 * 24);
   return days;
 }
 //-------------------------------------------------------------------------------------------------
 
 double fsrs_calc_R_recall_value(double t, double s) {
   return pow(1.0 + factor() * t / s, decay());
-}
-
-double fsrs_days_till_repeat(double s, double r) {
-  return (s / factor()) * (pow(r, 1.0 / decay()) - 1.0);
 }
 
 void fsrs_review(Card *c, int g) {
@@ -105,4 +101,3 @@ void fsrs_review(Card *c, int g) {
     c->FSRS_Difficulty = next_d(c->FSRS_Difficulty, g);  
   }
 }
-

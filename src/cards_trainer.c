@@ -5,31 +5,77 @@
 #include "data_base_interface.h"
 #include "common.h"
 #include "card_rememberence_grading.h"
-#include "logger.h"
+#include "src/fsrs_algorithm.h"
+#include "src/logger.h"
 #include <sys/time.h>
 #include <time.h>
 
-Card current_card;
+
+typedef enum {
+  CURRENT_CARD_LONG_TERM_TRAINING,
+  CURRENT_CARD_NEW_CARD,
+  CURRENT_CARD_RANDOM,
+} CURRENT_CARD_TYPE;
+
+static Card current_card;
+static CURRENT_CARD_TYPE current_card_type;
 
 static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time) {
   return (end_time->tv_sec-start_time->tv_sec)*1000+(end_time->tv_usec-start_time->tv_usec)/1000;
 }
-void print_current_retention() {
-  double elapsed_days_sience_last_review = (time(NULL) - current_card.last_review_unix_time)/(60.0*60.0*24.0);
-  LOG_DOUBLE(elapsed_days_sience_last_review);
-  LOG_INT(time(NULL));
-  LOG_INT(current_card.last_review_unix_time);
-  wchar_t retention[128];
-  double R_percent = fsrs_calc_R_recall_value(elapsed_days_sience_last_review,current_card.FSRS_Stability)*100;
-  LOG_DOUBLE(R_percent);
-  LOG_DOUBLE(current_card.FSRS_Stability);
-  swprintf(retention, ARRAY_SIZE(retention), L"Retention = %f%%", R_percent);
-  ncurses_info_pannel3_output_wstring(ARRAY_SIZE(retention), retention);
+
+static int is_R_below_threshhold(Card *card) {
+  double elapsed_days_since_last_review = (time(NULL) - card->last_FSRS_review_unix_time)/(60.0*60.0*24.0);
+  double R = fsrs_calc_R_recall_value(elapsed_days_since_last_review,card->FSRS_Stability);
+  return R <= 0.90;
 }
-void set_card() {
-  select_lowest_R_card(&current_card);
+static void print_statistics() {
+  wchar_t statistics_string[128];
+  double elapsed_days_since_last_review = (time(NULL) - current_card.last_FSRS_review_unix_time)/(60.0*60.0*24.0);
+  double R_percent = fsrs_calc_R_recall_value(elapsed_days_since_last_review,current_card.FSRS_Stability)*100;
+  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Long term Retention = %f%%", R_percent);
+  ncurses_info_pannel3_output_wstring(ARRAY_SIZE(statistics_string), statistics_string);
+  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Remaining new cards = %d", count_new_cards());
+  ncurses_info_pannel4_output_wstring(ARRAY_SIZE(statistics_string), statistics_string);
+
+}
+static void set_card() {
+  if(!select_lowest_R_card(&current_card) && is_R_below_threshhold(&current_card)) {
+    current_card_type = CURRENT_CARD_LONG_TERM_TRAINING;
+  }
+  else if(!select_random_new_card(&current_card)) {
+    current_card_type = CURRENT_CARD_NEW_CARD;
+  }
+  else if(!select_random_learned_card(&current_card)) {
+    current_card_type = CURRENT_CARD_RANDOM;
+  }
+  LOG_INT(current_card_type);
+  LOG_INT(current_card.id);
+  LOG_W(current_card.back);
+  LOG_W(current_card.front);
+  LOG("----");
   set_new_hidden_string_to_Word_Progress(ARRAY_SIZE(current_card.back), current_card.back, ARRAY_SIZE(current_card.front), current_card.front);
-  print_current_retention();
+  print_statistics();
+}
+
+static void review_card(FSRS_GRADE grade) {
+  if(current_card_type == CURRENT_CARD_LONG_TERM_TRAINING) {
+    fsrs_review(&current_card, grade);
+    update_card_FSRS_data(&current_card);
+  }
+  else if (current_card_type == CURRENT_CARD_NEW_CARD) {
+    current_card.steps_until_learned--;
+    update_card_stepsUntilLearned_data(&current_card);
+    if(current_card.steps_until_learned == 0) {
+      fsrs_review(&current_card, FSRS_RECALL_HARD);
+      update_card_FSRS_data(&current_card);
+    }
+  }
+  else if (current_card_type == CURRENT_CARD_RANDOM) {
+    //do abolutely nothing
+  }
+  //DOING THIS ONE TIME EVERY TIME
+  update_card_extra_data(&current_card);
 }
 void run_card_trainer() {
   ncurses_initialize_session();  
@@ -60,9 +106,8 @@ void run_card_trainer() {
       gettimeofday(&end_time,0);
       int spent_time_ms = calc_interval_ms(&start_time, &end_time);
       FSRS_GRADE grade = grade_card_rememberence(failed_symbols, without_hint, spent_time_ms);
-      fsrs_review(&current_card, grade);
-      update_card_FSRS_data(&current_card);
       insert_card_training_history(&current_card, grade, failed_symbols, without_hint, spent_time_ms);
+      review_card(grade);
 
       set_card(); 
       gettimeofday(&start_time,0);

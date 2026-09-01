@@ -9,5 +9,4 @@ typedef enum {
 } FSRS_GRADE;
 
 double fsrs_calc_R_recall_value(double t, double s);
-double fsrs_days_till_repeat(double s, double r);
 void fsrs_review(Card *c, int g);
