@@ -2,8 +2,9 @@
 #include "japan_char.h"
 #include "card.h"
 #include "fsrs_algorithm.h"
+#include "kana_trainer.h"
 
-void select_hiragana_rows(int n, JapanChar japanString[n], int *found_rows, int up_row, int down_row);
+void select_kana_rows(int n, JapanChar japanString[n], int *found_rows, int up_row, int down_row, DAKUEN_HANDAKUEN dakuen_handakuen, KANA_TYPE kana_type);
 void select_cards(int n, Card listOfCards[n], int *found_cards);
 void insert_symbol_training_history(int JapanChar_id, int failed_attempts, int spent_time_ms);
 void insert_card_training_history(Card *card, FSRS_GRADE grade, int failed_symbols, int without_hint, int spent_time_ms);

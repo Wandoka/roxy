@@ -1,5 +1,6 @@
 #include "data_base_initialization.h"
 #include "full_hiragana_table.h"
+#include "full_katakana_table.h"
 #include "data_base_query_templates.h"
 #include "adding_cards.h"
 
@@ -20,6 +21,7 @@ void initialize_database() {
   ;
   sql_run(sql_create_JapanChars_table);
   fill_full_hiragana_table();
+  fill_full_katakana_table();
 
   const char *sql_create_SymbolTrainingFullHistory_table =
     " CREATE TABLE IF NOT EXISTS SymbolTrainingFullHistory ("

@@ -1,17 +1,34 @@
 #include "data_base_interface.h"
 #include "data_base_query_templates.h"
 #include "common.h"
+#include <string.h>
 #include <time.h>
 
-void select_hiragana_rows(int n, JapanChar japanString[n], int *found_rows, int up_row, int down_row) {
+void select_kana_rows(int n, JapanChar japanString[n], int *found_rows, int up_row, int down_row, DAKUEN_HANDAKUEN dakuen_handakuen, KANA_TYPE kana_type) {
   const char *sql =
     " SELECT id, symbol, row, column, type, subtype, can_sokuon, can_yoon"
-    " FROM JapanChars WHERE type == 'hiragana' and (row >= ? AND row <= ?);"
+    " FROM JapanChars "
+    " WHERE type = ? AND (row >= ? AND row <= ?)"
+    " AND (1 = ? OR subtype = 'normal');"
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
-  sql_bind_int(stmt, 1, up_row);
-  sql_bind_int(stmt, 2, down_row);
+  if(kana_type == HIRAGANA) {
+    const char* str = "hiragana";
+    sql_bind_text(stmt, 1, strlen(str), str);
+  }
+  else { //KATAKANA
+    const char* str = "katakana";
+    sql_bind_text(stmt, 1, strlen(str), str);
+  }
+  sql_bind_int(stmt, 2, up_row);
+  sql_bind_int(stmt, 3, down_row);
+  if(dakuen_handakuen == NO_DAKUEN_HANDAKUEN) {
+    sql_bind_int(stmt, 4, 0);
+  }
+  else {
+    sql_bind_int(stmt, 4, 1);
+  }
   *found_rows = 0;
   for(int i = 0; i < n; ++i) {
     if(sqlite3_step(stmt) != SQLITE_ROW) break;

@@ -1,7 +1,9 @@
 #include "random_generator_interface.h"
-#include "src/full_hiragana_table.h"
-#include "src/japan_char.h"
+#include "full_hiragana_table.h"
+#include "full_katakana_table.h"
+#include "japan_char.h"
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 
@@ -40,11 +42,21 @@ void pseudorandom_japan_string(int n, JapanChar all_symbols[n], int m, JapanChar
     //тут идёт проверка на добавление сокуона и йууна
     if(i+1 < am && random_jstring[i].can_sokuon && random_int(1, 100) <= 3) { //3% chance of adding a sokuon
       random_jstring[i+1] = random_jstring[i];
-      random_jstring[i] = hiragana_sokuon_jchar;
+      if(!strcmp("hiragana", random_jstring[i].type)) {
+        random_jstring[i] = hiragana_sokuon_jchar;
+      }
+      else {
+        random_jstring[i] = katakana_sokuon_jchar;
+      }
       ++i;
     }
     if(i+1 < am && random_jstring[i].can_yoon && random_int(1, 100) <= 20) { //20% chance of adding a yoon
-      random_jstring[i+1] = hiragana_yoon_jchars[random_int(0, 2)];
+      if(!strcmp("hiragana", random_jstring[i].type)) {
+        random_jstring[i+1] = hiragana_yoon_jchars[random_int(0, 2)];
+      }
+      else {
+        random_jstring[i+1] = katakana_yoon_jchars[random_int(0, 2)];
+      }
       ++i;
     }
   }

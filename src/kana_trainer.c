@@ -24,14 +24,14 @@ static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time
     return (end_time->tv_sec-start_time->tv_sec)*1000+(end_time->tv_usec-start_time->tv_usec)/1000;
 }
 
-int run_kana_trainer(int up_row, int down_row) {
+int run_kana_trainer(KANA_TYPE kana_type, int up_row, int down_row, DAKUEN_HANDAKUEN dakuen_handakuen) {
   ncurses_initialize_session();  
   NCursesConfig config;
   get_default_ncurses_config(&config);
   ncurses_set_config(&config);
+ 
+  select_kana_rows(ARRAY_SIZE(trainingPack), trainingPack, &pack_size, up_row, down_row, dakuen_handakuen, kana_type);
   
-  select_hiragana_rows(ARRAY_SIZE(trainingPack), trainingPack, &pack_size, up_row, down_row);
-
   new_random_jstring();
 
   int current_jpos = 0;
