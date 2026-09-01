@@ -1,12 +1,13 @@
 #include "logger.h"
 #include <stdio.h>
+#include "folders_access.h"
 
 static int initialized = 0;
 FILE *log_file;
 void initialize_logger() {
   assert(initialized == 0);
   initialized = 1;
-  log_file = fopen("debug.log", "a");
+  log_file = fopen(make_local_share_folder_path("roxy_log.txt"), "a");
 }
 
 void _LOG(const char *file, int line, const char *name, const char *str) {

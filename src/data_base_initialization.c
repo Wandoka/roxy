@@ -3,11 +3,12 @@
 #include "full_katakana_table.h"
 #include "data_base_query_templates.h"
 #include "adding_cards.h"
+#include "folders_access.h"
 
 sqlite3 *db;
 
 void initialize_database() {
-  sqlite3_open("roxy.db", &db);
+  sqlite3_open(make_local_share_folder_path("roxy_sqlite3.db"), &db);
   const char *sql_create_JapanChars_table =
     " CREATE TABLE IF NOT EXISTS JapanChars ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"

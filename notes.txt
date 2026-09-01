@@ -24,3 +24,4 @@ TODO:
 11) add option to add new cards / edit existing
 12) when I search for new cards, there would be a limit of showing same cards in a row. So like they can repeat itself every 3-6 times i guess.
    I am talking about a case when i have exactly 1 card. I don't want to repeatedly see it. I want to see some random learned cards at first, and only then see the new card.    So there is a chance I fogot how to write it.
+13) fix the retention value that jumps alot

@@ -40,6 +40,7 @@ void add_all_cards() {
   phrase(L"こんばんは", L"Добрый вечер!");
   phrase(L"さようなら", L"До свидания! Прощай (если знаем, что долго не увидимся с человеком)");
   phrase(L"それではまた", L"До встречи! (чуть более вежливо)");
+  /*
   phrase(L"じゃまた", L"До встречи! (менее вежливо)");
   phrase(L"またね", L"До встречи! Увидимся (для неформального общения)");
   phrase(L"またあした", L"До завтра!");
@@ -152,7 +153,7 @@ void add_all_cards() {
   phrase(L"いちじ", L"one o'clock");
   phrase(L"にじはん", L"half past two");
   phrase(L"はい", L"yes");
-  phrase(L"～ばん", L"number");
+  //phrase(L"～ばん", L"number");
   phrase(L"いちばん", L"первый");
   phrase(L"さいこう", L"самый лучший");
   phrase(L"くに", L"countries");
@@ -178,4 +179,5 @@ void add_all_cards() {
   phrase(L"ごちそうさまでした", L"Спасибо за угощение!");
   phrase(L"がっこう", L"школа / учеба");
   phrase(L"じかん", L"время");
+  */
 }
