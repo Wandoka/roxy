@@ -8,3 +8,19 @@ If there are no new cards, then I look at the difficulty of each card. And judji
 I have probably a perfect combo counter.
 
 
+-------------
+
+TODO:
+1) Statistics for kana trainer. Perfect in a row. Did symbols already. Mistakes. 
+2) Save DB for some other place, so it is hard to delete (it should live outside git, so should log)
+3) check if my ordering of R sotring is correct. Maybe it is absolutely wrong
+4) add new words, check if the previous ones are correct
+5) add an input variation, so it is ok to enter words with katakana (??)
+6) fix FSRS history. Add a full history about all of the grades.
+7) add color to the Remaining New cards and Retention Percentage, to show when it is good when it bad (and kinda like show the mode?)
+8) add a mode to train numbers
+9) add an option to banish cards
+10) add an option to return cards from banished state
+11) add option to add new cards / edit existing
+12) when I search for new cards, there would be a limit of showing same cards in a row. So like they can repeat itself every 3-6 times i guess.
+   I am talking about a case when i have exactly 1 card. I don't want to repeatedly see it. I want to see some random learned cards at first, and only then see the new card.    So there is a chance I fogot how to write it.
