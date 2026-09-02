@@ -15,3 +15,7 @@ int select_lowest_R_card(Card *c);
 int select_random_new_card(Card *c);
 int select_random_learned_card(Card *c);
 int count_new_cards();
+void add_new_card(int n, const wchar_t back[n], int m, const wchar_t front[m], int q, const char type[q]);
+int find_card_by_wstring(Card* c, int n, const wchar_t wstring[n]);
+void update_card_back(int id, int n, const wchar_t back[n]);
+void update_card_front(int id, int n, const wchar_t front[n]);

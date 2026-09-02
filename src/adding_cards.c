@@ -28,6 +28,7 @@ void phrase(const wchar_t back[], const wchar_t front[]) {
 }
 
 void add_all_cards() {
+  /*
   //--------------------------
   //--  LESSON 1 
   //--------------------------
@@ -40,7 +41,6 @@ void add_all_cards() {
   phrase(L"こんばんは", L"Добрый вечер!");
   phrase(L"さようなら", L"До свидания! Прощай (если знаем, что долго не увидимся с человеком)");
   phrase(L"それではまた", L"До встречи! (чуть более вежливо)");
-  /*
   phrase(L"じゃまた", L"До встречи! (менее вежливо)");
   phrase(L"またね", L"До встречи! Увидимся (для неформального общения)");
   phrase(L"またあした", L"До завтра!");
@@ -79,6 +79,7 @@ void add_all_cards() {
   phrase(L"あめりか", L"USA");
   phrase(L"いぎりす", L"United Kingdom");
   phrase(L"おーすとらりあ", L"Australia");
+  
   phrase(L"かんこく", L"Korea");
   phrase(L"かなだ", L"Canada");
   phrase(L"ちゅうごく", L"China");

@@ -33,7 +33,7 @@ sqlite3_stmt* sql_prepare(const char *sql) {
 }
 
 void sql_bind_text(sqlite3_stmt *stmt, int id, int n, const char column_data[n]) {
-  int result = sqlite3_bind_text(stmt, id, column_data, -1, SQLITE_TRANSIENT);
+  int result = sqlite3_bind_text(stmt, id, column_data, n, SQLITE_TRANSIENT);
   if (result != SQLITE_OK) {
       printf("SQL bind_text error: %s\n", sqlite3_errmsg(db));
       exit(1);

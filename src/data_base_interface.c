@@ -202,3 +202,69 @@ void update_card_extra_data(Card* c) {
   sql_bind_int(stmt, 2, c->id);
   sqlite3_step(stmt);
 }
+
+void add_new_card(int n, const wchar_t back[n], int m, const wchar_t front[m], int q, const char type[q]) {  
+  const char *sql =
+    "INSERT INTO cards "
+    "(back, front, type) "
+    "VALUES (?, ?, ?);"
+  ;
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_wtext(stmt, 1, n, back);
+  sql_bind_wtext(stmt,  2, m, front);
+  sql_bind_text(stmt,  3, q, type);
+
+  stmt_run_and_finish(stmt);
+}
+
+int find_card_by_wstring(Card* c, int n, const wchar_t wstring[n]) {  
+  const char *sql =
+    " SELECT id, back, front, FSRS_Stability, FSRS_Difficulty, has_FSRS_data, last_FSRS_review_unix_time, last_seen, steps_until_learned, times_seen"
+    " FROM Cards"
+    " WHERE back == ? OR front == ?;"
+  ;
+
+
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_wtext(stmt, 1, n, wstring);
+  sql_bind_wtext(stmt, 2, n, wstring);
+  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
+  stmt_column_int  (stmt,  0, &c->id);
+  stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->back), c->back);
+  stmt_column_wtext(stmt,  2, ARRAY_SIZE(c->front), c->front);
+  stmt_column_double(stmt,  3, &c->FSRS_Stability);
+  stmt_column_double(stmt,  4, &c->FSRS_Difficulty);
+  stmt_column_int(stmt,  5, &c->has_FSRS_data); 
+  stmt_column_int(stmt,  6, &c->last_FSRS_review_unix_time); 
+  stmt_column_text(stmt,  7, ARRAY_SIZE(c->last_seen), c->last_seen); 
+  stmt_column_int(stmt,  8, &c->steps_until_learned); 
+  stmt_column_int(stmt,  9, &c->times_seen); 
+  stmt_run_and_finish(stmt);
+
+  return 0;
+}
+
+void update_card_back(int id, int n, const wchar_t back[n]) {
+  const char *sql =
+    " UPDATE Cards"
+    " SET back = ?"
+    " WHERE id = ?;"
+  ;
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_wtext(stmt, 1, n, back);
+  sql_bind_int(stmt, 2, id);
+  sqlite3_step(stmt);
+}
+
+void update_card_front(int id, int n, const wchar_t front[n]) {
+  const char *sql =
+    " UPDATE Cards"
+    " SET back = ?"
+    " WHERE id = ?;"
+  ;
+  sqlite3_stmt *stmt = sql_prepare(sql);
+  sql_bind_wtext(stmt, 1, n, front);
+  sql_bind_int(stmt, 2, id);
+  sqlite3_step(stmt);
+}
