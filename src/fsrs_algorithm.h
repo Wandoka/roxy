@@ -8,5 +8,5 @@ typedef enum {
   FSRS_RECALL_EASY = 4 
 } FSRS_GRADE;
 
-double fsrs_calc_R_recall_value(double t, double s);
+double fsrs_calc_R_recall_value(Card *c);
 void fsrs_review(Card *c, int g);

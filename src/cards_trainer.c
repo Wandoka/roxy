@@ -8,7 +8,6 @@
 #include "src/fsrs_algorithm.h"
 #include "src/logger.h"
 #include <sys/time.h>
-#include <time.h>
 
 
 typedef enum {
@@ -24,24 +23,29 @@ static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time
   return (end_time->tv_sec-start_time->tv_sec)*1000+(end_time->tv_usec-start_time->tv_usec)/1000;
 }
 
-static int is_R_below_threshhold(Card *card) {
-  double elapsed_days_since_last_review = (time(NULL) - card->last_FSRS_review_unix_time)/(60.0*60.0*24.0);
-  double R = fsrs_calc_R_recall_value(elapsed_days_since_last_review,card->FSRS_Stability);
-  LOG_DOUBLE(R);
-  return R <= 0.90;
-}
 static void print_statistics() {
   wchar_t statistics_string[128];
-  double elapsed_days_since_last_review = (time(NULL) - current_card.last_FSRS_review_unix_time)/(60.0*60.0*24.0);
-  double R_percent = fsrs_calc_R_recall_value(elapsed_days_since_last_review,current_card.FSRS_Stability)*100;
-  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Long term Retention = %f%%", R_percent);
-  ncurses_info_pannel3_output_wstring(ARRAY_SIZE(statistics_string), statistics_string);
-  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Remaining new cards = %d", count_new_cards());
-  ncurses_info_pannel4_output_wstring(ARRAY_SIZE(statistics_string), statistics_string);
+  Card lowest_R_card;
+  select_lowest_R_card(&lowest_R_card);
 
+  double R_percent = fsrs_calc_R_recall_value(&lowest_R_card)*100;
+  NCURSES_COLORS ncurses_color = NCURSES_GREEN_COLOR_PAIR;
+  if(R_percent <= 90) {
+    ncurses_color = NCURSES_RED_COLOR_PAIR;
+  }
+  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Long term Retention = %f%%", R_percent);
+  ncurses_info_pannel3_output_wstring(ARRAY_SIZE(statistics_string), statistics_string, ncurses_color);
+
+  ncurses_color = NCURSES_GREEN_COLOR_PAIR;
+  int amount_of_new_cards = count_new_cards();
+  if(amount_of_new_cards != 0) {
+    ncurses_color = NCURSES_RED_COLOR_PAIR;
+  }
+  swprintf(statistics_string, ARRAY_SIZE(statistics_string), L"Remaining new cards = %d", amount_of_new_cards);
+  ncurses_info_pannel4_output_wstring(ARRAY_SIZE(statistics_string), statistics_string, ncurses_color);
 }
 static void set_card() {
-  if(!select_lowest_R_card(&current_card) && is_R_below_threshhold(&current_card)) {
+  if(!select_lowest_R_card(&current_card) && fsrs_calc_R_recall_value(&current_card) <= 0.90) {
     current_card_type = CURRENT_CARD_LONG_TERM_TRAINING;
   }
   else if(!select_random_new_card(&current_card)) {
@@ -65,7 +69,18 @@ static void review_card(FSRS_GRADE grade) {
     update_card_FSRS_data(&current_card);
   }
   else if (current_card_type == CURRENT_CARD_NEW_CARD) {
-    current_card.steps_until_learned--;
+    if(grade == FSRS_RECALL_EASY) { 
+      current_card.steps_until_learned--;
+    }
+    else if(grade == FSRS_RECALL_HARD) {
+      current_card.steps_until_learned++;
+      if(current_card.steps_until_learned > 2){
+        current_card.steps_until_learned = 2;
+      }
+    }
+    else if(grade == FSRS_FORGET) {
+      current_card.steps_until_learned = 2;
+    }
     update_card_stepsUntilLearned_data(&current_card);
     if(current_card.steps_until_learned == 0) {
       fsrs_review(&current_card, FSRS_RECALL_HARD);

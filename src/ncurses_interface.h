@@ -1,8 +1,15 @@
 #pragma once
 #include <ncurses.h>
 
-#define NCURSES_GREEN_COLOR_PAIR   1
-#define NCURSES_RED_COLOR_PAIR     2
+//#define NCURSES_NO_COLOR           0
+//#define NCURSES_GREEN_COLOR_PAIR   1
+//#define NCURSES_RED_COLOR_PAIR     2
+
+typedef enum {
+  NCURSES_NO_COLOR = 0, 
+  NCURSES_GREEN_COLOR_PAIR = 1,
+  NCURSES_RED_COLOR_PAIR = 2
+} NCURSES_COLORS;
 
 
 typedef struct NCursesConfig{
@@ -34,14 +41,14 @@ void ncurses_finish_session();
 void ncurses_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_clear_output_line();
 wchar_t ncurses_get_user_input_wchar();
-void color_jchar_in_position(int position, wchar_t c, int color_pair_id);
+void color_jchar_in_position(int position, wchar_t c, NCURSES_COLORS color_pair_id);
 void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]);
 void ncurses_clear_pannel2_output_line();
-void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id);
 void ncurses_clear_pannel3_output_line();
-void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id);
 void ncurses_clear_pannel4_output_line();
-void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n]);
+void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id);
 void ncurses_clear_pannel5_output_line();
 

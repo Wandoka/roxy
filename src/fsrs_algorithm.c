@@ -75,11 +75,18 @@ static double days_since_last_review(Card *c) {
   double days = (unixtime - c->last_FSRS_review_unix_time) / (60.0 * 60.0 * 24);
   return days;
 }
-//-------------------------------------------------------------------------------------------------
 
-double fsrs_calc_R_recall_value(double t, double s) {
+static double fsrs_calc_R_recall_value_custom_time(double t, double s) {
   return pow(1.0 + factor() * t / s, decay());
 }
+//-------------------------------------------------------------------------------------------------
+
+double fsrs_calc_R_recall_value(Card *c) {
+  double t = days_since_last_review(c);
+  double s = c->FSRS_Stability;
+  return fsrs_calc_R_recall_value_custom_time(t, s);
+}
+
 
 void fsrs_review(Card *c, int g) {
   double elapsed_days = days_since_last_review(c);
@@ -91,7 +98,7 @@ void fsrs_review(Card *c, int g) {
     c->FSRS_Stability = fmax(next_s_short(c->FSRS_Stability, g), SMIN);
     c->FSRS_Difficulty = next_d(c->FSRS_Difficulty, g);
   } else {
-    double r = fsrs_calc_R_recall_value(elapsed_days, c->FSRS_Stability);
+    double r = fsrs_calc_R_recall_value_custom_time(elapsed_days, c->FSRS_Stability);
     if(g == FSRS_FORGET) {
       c->FSRS_Stability = fmax(next_s_forget(c->FSRS_Difficulty, c->FSRS_Stability, r), SMIN);
     }

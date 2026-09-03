@@ -68,12 +68,14 @@ void ncurses_finish_session() {
   endwin(); // restore terminal
 }
 
+
 void ncurses_output_wstring(int n, wchar_t wstring[n]) {
   mvaddwstr(config.output_text_start_L, config.output_text_start_C, wstring);
   clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
   set_cursor_to_default_position();
   refresh();
 }
+
 
 void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]) {
   mvaddwstr(config.output_text_info_pannel_start_L, config.output_text_info_pannel_start_C, wstring);
@@ -87,22 +89,28 @@ void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]) {
   set_cursor_to_default_position();
   refresh();
 }
-void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n]) {
+void ncurses_info_pannel3_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id) {
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   mvaddwstr(config.output_text_info_pannel3_start_L, config.output_text_info_pannel3_start_C, wstring);
   clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  if(color_pair_id != NCURSES_NO_COLOR) attroff(COLOR_PAIR(color_pair_id));
   set_cursor_to_default_position();
   refresh();
 }
-void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n]) {
+void ncurses_info_pannel4_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id) {
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   mvaddwstr(config.output_text_info_pannel4_start_L, config.output_text_info_pannel4_start_C, wstring);
   clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
-  set_cursor_to_default_position();
+  attroff(COLOR_PAIR(color_pair_id));
+  if(color_pair_id != NCURSES_NO_COLOR) set_cursor_to_default_position();
   refresh();
 }
 
-void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n]) {
+void ncurses_info_pannel5_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id) {
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   mvaddwstr(config.output_text_info_pannel5_start_L, config.output_text_info_pannel5_start_C, wstring);
   clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  if(color_pair_id != NCURSES_NO_COLOR) attroff(COLOR_PAIR(color_pair_id));
   set_cursor_to_default_position();
   refresh();
 }
@@ -156,10 +164,10 @@ wchar_t ncurses_get_user_input_wchar() {
   return (wchar_t) ch;
 }
 
-void color_jchar_in_position(int position, wchar_t c, int color_pair_id) {
-  attron(COLOR_PAIR(color_pair_id));
+void color_jchar_in_position(int position, wchar_t c, NCURSES_COLORS color_pair_id) {
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   mvaddnwstr(config.output_text_start_L, config.output_text_start_C+position*JAPANESE_SIZE, &c, 1); 
   set_cursor_to_default_position();
-  attroff(COLOR_PAIR(color_pair_id));
+  if(color_pair_id != NCURSES_NO_COLOR) attroff(COLOR_PAIR(color_pair_id));
   refresh(); 
 }
