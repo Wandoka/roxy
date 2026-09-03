@@ -1,6 +1,7 @@
 #include "data_base_interface.h"
 #include "data_base_query_templates.h"
 #include "common.h"
+#include "logger.h"
 #include <string.h>
 #include <time.h>
 
@@ -51,14 +52,18 @@ int select_lowest_R_card(Card *c) {
     "         ((? - last_FSRS_review_unix_time) / ?) / FSRS_Stability as R_approximation_for_sorting"
     " FROM Cards"
     " WHERE has_FSRS_data = 1"
-    " ORDER BY R_approximation_for_sorting ASC"
+    " ORDER BY R_approximation_for_sorting DESC"
     " LIMIT 1;"
   ;
 
   sqlite3_stmt *stmt = sql_prepare(sql);
   sql_bind_int(stmt, 1, time(NULL));
   sql_bind_double(stmt, 2, 60.0*60.0*24.0);
-  if(sqlite3_step(stmt) != SQLITE_ROW) return -1;
+  if(sqlite3_step(stmt) != SQLITE_ROW) {
+    LOG("failed to find card in function \"select_lowest_R_card\"");
+    return -1;
+  }
+
   stmt_column_int  (stmt,  0, &c->id);
   stmt_column_wtext(stmt,  1, ARRAY_SIZE(c->back), c->back);
   stmt_column_wtext(stmt,  2, ARRAY_SIZE(c->front), c->front);
@@ -70,6 +75,8 @@ int select_lowest_R_card(Card *c) {
   stmt_column_int(stmt,  8, &c->steps_until_learned); 
   stmt_column_int(stmt,  9, &c->times_seen);
 
+  LOG_W(L"FOUND card in \"select_lowest_R_card\"\n");
+  LOG_W(c->front);
   return 0;
 }
 
@@ -260,7 +267,7 @@ void update_card_back(int id, int n, const wchar_t back[n]) {
 void update_card_front(int id, int n, const wchar_t front[n]) {
   const char *sql =
     " UPDATE Cards"
-    " SET back = ?"
+    " SET front = ?"
     " WHERE id = ?;"
   ;
   sqlite3_stmt *stmt = sql_prepare(sql);

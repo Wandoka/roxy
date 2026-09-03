@@ -18,8 +18,8 @@ void CardDeckManipulation_add_card(int n, char back_japan[n], int m, char front_
     strcpy(result_type, type);
   }
 
-  add_new_card(ARRAY_SIZE(wstring_front_english), wstring_front_english, 
-               ARRAY_SIZE(wstring_back_japan),    wstring_back_japan, 
+  add_new_card(ARRAY_SIZE(wstring_back_japan),    wstring_back_japan, 
+               ARRAY_SIZE(wstring_front_english), wstring_front_english, 
                ARRAY_SIZE(result_type),           result_type);
 }
 

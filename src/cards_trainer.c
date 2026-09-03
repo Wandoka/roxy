@@ -27,6 +27,7 @@ static int calc_interval_ms(struct timeval *start_time, struct timeval *end_time
 static int is_R_below_threshhold(Card *card) {
   double elapsed_days_since_last_review = (time(NULL) - card->last_FSRS_review_unix_time)/(60.0*60.0*24.0);
   double R = fsrs_calc_R_recall_value(elapsed_days_since_last_review,card->FSRS_Stability);
+  LOG_DOUBLE(R);
   return R <= 0.90;
 }
 static void print_statistics() {

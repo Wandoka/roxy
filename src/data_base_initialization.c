@@ -54,7 +54,7 @@ void initialize_database() {
     " );"
   ;
   sql_run(sql_create_Cards_table);
-  add_all_cards();
+  //add_all_cards();
 
   const char *sql_create_CardsTrainingFSRSHistory_table =
     " CREATE TABLE IF NOT EXISTS CardsTrainingFSRSHistory ("
