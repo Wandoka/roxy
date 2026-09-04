@@ -92,6 +92,25 @@ static void edit_card_front(int argc, char *argv[argc]) {
   CardDeckManipulation_edit_card_front(id, strlen(argv[1]), argv[1]);
 }
 
+static void banish_card(int argc, char *argv[argc]) {
+  (void) argc; (void) argv; 
+  if(argc != 1) {
+    printf("ERROR! there should be exactly 1 argument: id of the card (int)\n");
+    return;
+  }
+  int id = atoi(argv[0]);
+  CardDeckManipulation_change_banished_state(id, 1);
+}
+
+static void return_card(int argc, char *argv[argc]) {
+  (void) argc; (void) argv; 
+  if(argc != 1) {
+    printf("ERROR! there should be exactly 1 argument: id of the card (int)\n");
+    return;
+  }
+  int id = atoi(argv[0]);
+  CardDeckManipulation_change_banished_state(id, 0);
+}
 
 
 struct Argument listOfArguments[] = {
@@ -103,8 +122,8 @@ struct Argument listOfArguments[] = {
   { "find_card",      "find card",                                        find_card }, 
   { "edit_card_back", "edit back of the card with this id",               edit_card_back }, 
   { "edit_card_front","edit front of the card with this id",              edit_card_front }, 
-  //{ "banish_card",    "temporary disable a card",                         cards_training }, 
-  //{ "return_card",    "reenable card from banish",                        cards_training }, 
+  { "banish_card",    "temporary disable a card",                         banish_card }, 
+  { "return_card",    "reenable card from banish",                        return_card }, 
 };
 
 int main(int argc, char *argv[argc]) {

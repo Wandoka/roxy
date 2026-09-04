@@ -2,7 +2,6 @@
 #include "full_hiragana_table.h"
 #include "full_katakana_table.h"
 #include "data_base_query_templates.h"
-#include "adding_cards.h"
 #include "folders_access.h"
 
 sqlite3 *db;
@@ -50,6 +49,7 @@ void initialize_database() {
     " type TEXT DEFAULT 'phrase',"
     " last_seen TEXT,"
     " times_seen INTEGER DEFAULT 0,"
+    " banished INTEGER DEFAULT 0,"
     " steps_until_learned INTEGER DEFAULT 2"
     " );"
   ;
@@ -60,16 +60,38 @@ void initialize_database() {
     " CREATE TABLE IF NOT EXISTS CardsTrainingFSRSHistory ("
     " id INTEGER PRIMARY KEY AUTOINCREMENT,"
     " Card_id INTEGER NOT NULL,"
-    " FSRS_Stability DOUBLE,"
-    " FSRS_Difficulty DOUBLE,"
+    " FSRS_Stability_BEFORE DOUBLE,"
+    " FSRS_Difficulty_BEFORE DOUBLE,"
+    " FSRS_Stability_AFTER DOUBLE,"
+    " FSRS_Difficulty_AFTER DOUBLE,"
     " FSRS_Grade INTEGER,"
     " used_hint INTEGER,"
     " failed_symbols INTEGER,"
     " spent_time_ms INTEGER NOT NULL,"
+    " grade_is_forced INTEGER,"
     " when_attempted TEXT DEFAULT (datetime('now', 'localtime')),"
     " FOREIGN KEY (Card_id) REFERENCES Cards(id) ON DELETE CASCADE"
     " );"
   ;
   sql_run(sql_create_CardsTrainingFSRSHistory_table);
+
+  const char *sql_create_CardsTrainingHistory_table =
+    " CREATE TABLE IF NOT EXISTS CardsTrainingHistory ("
+    " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    " Card_id INTEGER NOT NULL,"
+    " FSRS_Stability DOUBLE,"
+    " FSRS_Difficulty DOUBLE,"
+    " suggestion_type INTEGER,"
+    " FSRS_Grade INTEGER,"
+    " used_hint INTEGER,"
+    " failed_symbols INTEGER,"
+    " spent_time_ms INTEGER NOT NULL,"
+    " grade_is_forced INTEGER,"
+    " when_attempted TEXT DEFAULT (datetime('now', 'localtime')),"
+    " FOREIGN KEY (Card_id) REFERENCES Cards(id) ON DELETE CASCADE"
+    " );"
+  ;
+  sql_run(sql_create_CardsTrainingHistory_table);
+
 }
 

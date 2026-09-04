@@ -11,3 +11,4 @@ void CardDeckManipulation_find_card(int n, char string[n]);
 void CardDeckManipulation_show_cards();
 void CardDeckManipulation_edit_card_back(int id, int n, char string[n]);
 void CardDeckManipulation_edit_card_front(int id, int n, char string[n]);
+void CardDeckManipulation_change_banished_state(int id, int banished_state);

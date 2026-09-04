@@ -1,8 +1,8 @@
 #include "card_rememberence_grading.h"
 
 
-FSRS_GRADE grade_card_rememberence(int failed_symbols, int without_hint, int spent_time_ms) {
-  if(!without_hint) return FSRS_FORGET;
+FSRS_GRADE grade_card_rememberence(int failed_symbols, int used_hint, int spent_time_ms) {
+  if(used_hint) return FSRS_FORGET;
   else if(failed_symbols == 0 && spent_time_ms <= 20000) {
     return FSRS_RECALL_EASY;
   }

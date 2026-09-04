@@ -52,6 +52,7 @@ void ncurses_initialize_session() {
   keypad(stdscr, TRUE);
   init_pair(NCURSES_GREEN_COLOR_PAIR, COLOR_GREEN, COLOR_BLACK);
   init_pair(NCURSES_RED_COLOR_PAIR, COLOR_RED, COLOR_BLACK);
+  init_pair(NCURSES_YELLOW_COLOR_PAIR, COLOR_YELLOW, COLOR_BLACK);
   curs_set(1);                
   set_cursor_to_default_position();
   refresh(); 
@@ -83,9 +84,11 @@ void ncurses_info_pannel_output_wstring(int n, wchar_t wstring[n]) {
   set_cursor_to_default_position();
   refresh();
 }
-void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n]) {
+void ncurses_info_pannel2_output_wstring(int n, wchar_t wstring[n], NCURSES_COLORS color_pair_id) {
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   mvaddwstr(config.output_text_info_pannel2_start_L, config.output_text_info_pannel2_start_C, wstring);
   clrtoeol(); //удаляем всё, что осталось на строчке дальше справа
+  if(color_pair_id != NCURSES_NO_COLOR) attron(COLOR_PAIR(color_pair_id));
   set_cursor_to_default_position();
   refresh();
 }

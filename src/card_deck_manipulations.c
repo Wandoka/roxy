@@ -52,3 +52,7 @@ void CardDeckManipulation_edit_card_front(int id, int n, char string[n]) {
   utf8_to_wchar(strlen(string), string, ARRAY_SIZE(wstring), wstring);
   update_card_front(id, n, wstring);
 }
+
+void CardDeckManipulation_change_banished_state(int id, int banished_state) {
+  update_card_banished_state(id, banished_state);
+}

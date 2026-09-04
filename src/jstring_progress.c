@@ -75,11 +75,13 @@ void set_new_hidden_string_to_Word_Progress(int n, wchar_t hidden[n], int m, wch
   ncurses_clear_output_line();
   ncurses_clear_pannel2_output_line();
   ncurses_clear_pannel3_output_line();
+  ncurses_clear_pannel4_output_line();
+  ncurses_clear_pannel5_output_line();
 }
 
 
 void show_word_of_Word_Progress() {
-  ncurses_info_pannel2_output_wstring(ARRAY_SIZE(wString), wString);
+  ncurses_info_pannel2_output_wstring(ARRAY_SIZE(wString), wString, NCURSES_NO_COLOR);
 }
 
 void Word_Progress_string_by_char(wchar_t c, int *good, int *finished) {
